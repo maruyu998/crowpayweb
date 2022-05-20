@@ -32,6 +32,12 @@ module.exports.requestAddFriend = async (req, res) => {
         })        
         return
     }
+    if(!await User.findOne({username: friendname}).exec()){
+        res.json({
+            messages: [{type:'warning', text: 'friend is not exist.'}]
+        })        
+        return
+    }
     // お互いにリクエストを送ることは可能．追加条件はacceptした場合のみの設計
     if(await Friend.findOne({username, friendname}).exec()){
         res.json({
