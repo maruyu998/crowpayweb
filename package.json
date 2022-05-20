@@ -23,7 +23,8 @@
     "rstart": "PORT=3001 BROWSER=none react-scripts start",
     "rbuild": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "forever": "react-scripts build && NODE_ENV=production forever start --minUptime 60000 --spinSleepTime 20000 --uid crowpay -a server/index.js"
   },
   "eslintConfig": {
     "extends": [

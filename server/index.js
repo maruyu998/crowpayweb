@@ -9,22 +9,22 @@ mongoose.connection.on('error', function(err) {
     process.exit(-1);
 });
 
-// const cookieParser = require('cookie-parser'); 
 const jsonParser = require('body-parser').json()
 const session = require('express-session');
 
 const express = require('express');
 const bodyParser = require('body-parser');
+// const cookieParser = require('cookie-parser'); 
 const app = express();
+// app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(session({
     secret: config.session_secret,
-    resave: true,
+    resave: false,
     saveUninitialized: false,
     cookie: {
         httpOnly: true,
-        secure: false,
         // secure: true,
         maxage: 1000 * 60 * 30
     }
@@ -44,6 +44,6 @@ app.use(basicAuth({
 app.use('/api', jsonParser, require('./router.js'));
 app.use(express.static(path.join(__dirname, "../build")))
 
-app.listen(4000, ()=>{
+app.listen(9200, ()=>{
     console.log('express app is listening')
 });
