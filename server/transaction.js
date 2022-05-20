@@ -89,3 +89,18 @@ module.exports.acceptTransaction = async (req, res) => {
         messages: [{type: 'info', text: 'transcation is accepted successfully.'}]
     })
 }
+
+module.exports.declineTransaction = async (req, res) => {
+    const username = req.session.username;
+    const transaction_id = req.body.transaction_id;
+    if(!await Transaction.findOne({accepter: username, _id: transaction_id, accepted_at: null}).exec()){
+        res.json({
+            messages: [{type: 'warning', text: 'transaction is not found.'}]
+        })
+        return
+    }
+    await Transaction.findOneAndRemove({_id: transaction_id});
+    res.json({
+        messages: [{type: 'info', text: 'declined transaction successfully.'}]
+    });
+}
