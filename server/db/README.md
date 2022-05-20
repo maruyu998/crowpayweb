@@ -1,0 +1,33 @@
+# DB Structure
+
+## User
+- username: str # unique
+- passhash: str # hashed password
+- groups: list
+    - id
+    - archived: boolean
+- amount: int # 残高
+
+## Group
+- id
+- groupname: str
+- members: list
+    - username
+    - accepted: boolean
+
+## Transaction
+- id
+- issuer # 取引起票者
+- issued_at # 起票日時
+- acceptor # 取引受任者
+- accepted_at # 受任日時
+- sender # 支払い者
+- reciever # 受け取り者
+- amount # 取引金額(正)
+- contents # 取引内容
+- accepted # bool・全ステークホールダーが認証し，取引が完了した時のフラグ
+
+## Friend # 今のところ相互に登録し合う
+- username
+- friendname
+- accepted
