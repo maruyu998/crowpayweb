@@ -24,6 +24,12 @@ module.exports.addTransaction = async (req, res) => {
         })
         return;
     }
+    if(!content){
+        res.json({
+            messages: [{type:'warning', text:'invalid request. content is required.'}]
+        })
+        return
+    }
     if(!reciever && !!sender){
         reciever = username
         accepter = sender
