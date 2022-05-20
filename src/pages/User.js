@@ -78,6 +78,7 @@ export default class User extends Component {
                   <div key={i} className="card col col-sm-12 col-md-6 col-xl-3">
                     <div className="card-body">
                       <p className="display-6">{f.username}</p>
+                      <p className="display-7">¥ {f.amount}</p>
                     </div>
                   </div>
                 )}

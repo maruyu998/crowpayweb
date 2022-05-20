@@ -14,11 +14,13 @@ module.exports.getSummary = async (req, res) => {
 
 module.exports.getUserFriends = async (req, res) => {
     const username = req.session.username;
-    const friends = await (await Friend.find({username}).exec()).map(f => (
-        { username: f.friendname, accepted: f.accepted }
-    ));
+    const friends = await Promise.all((await Friend.find({username}).exec()).map(async (f) => {
+        if(!f.accepted) return { username: f.friendname, accepted: f.accepted, amount: null }
+        const user = await User.findOne({username: f.friendname}).exec();
+        return { username: f.friendname, accepted: f.accepted, amount: user.amount }
+    }));
     const requested_friends = (await Friend.find({friendname: username, accepted: false}).exec()).map(f => (
-        { username: f.username, accepted: false }
+        { username: f.username, accepted: false, amount: null }
     ));
     res.json({ messages: [], username, friends, requested_friends })
 }
