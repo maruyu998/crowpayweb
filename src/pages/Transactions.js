@@ -30,6 +30,16 @@ export default class Transaction extends Component {
       this.setState({'redirect': res.redirect}) 
     })
   }
+  declineTransaction = (id) => {
+    fetch('/api/declineTransaction', {
+      method: "POST",
+      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ transaction_id: id })
+    }).then(res=>res.json()).then(res=>{ 
+      this.setState({'messages': res.messages}) 
+      this.setState({'redirect': res.redirect}) 
+    })
+  }
 
 	render(){
 		return (
@@ -47,6 +57,7 @@ export default class Transaction extends Component {
                 <p>{transaction.sender} → {transaction.reciever} (¥{transaction.amount})</p>
                 <p>登録日時 {transaction.issued_at}: {transaction.content}</p>
                 <button className="btn btn-primary btn-block" onClick={()=>this.acceptTransaction(transaction._id)}>Accept</button>
+                <button className="btn btn-danger btn-block" onClick={()=>this.declineTransaction(transaction._id)}>Decline</button>
               </div>
             </div>
           ))}
