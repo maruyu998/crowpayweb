@@ -6,6 +6,7 @@ export default class Transaction extends Component {
 	constructor(props){
 		super(props)
 		this.state = {
+      username: null,
 			transactions: [],
       messages: [],
       redirect: null
@@ -50,32 +51,41 @@ export default class Transaction extends Component {
             {this.state.messages.map(message=><div className={'alert alert-'+message.type} role="alert">{message.text}</div>)}
             {this.state.redirect && <Navigate to={this.state.redirect}/>}
           </div>
-          <h1 className="display-6">Accept Transaction</h1>
-          {this.state.transactions.filter(t=>!t.accepted_at&&t.accepter===this.state.username).map((transaction,i)=>(
-            <div key={i} className="card">
+          <h1 className="display-6">Accept Transaction <span>(¥ {
+            this.state.transactions.filter(t=>!t.accepted_at&&t.accepter==this.state.username)
+            .map(t=>Number(t.amount) * (t.reciever==this.state.username ? 1 : -1)).reduce((a,b)=>a+b,0)
+          })</span></h1>
+          {this.state.transactions.filter(t=>!t.accepted_at&&t.accepter==this.state.username).map((t,i)=>(
+            <div key={i} className={"card " + (t.reciever==this.state.username ? "border-info" : "border-warning")}>
               <div className="card-body">
-                <p>{transaction.sender} → {transaction.reciever} (¥{transaction.amount})</p>
-                <p>登録日時 {transaction.issued_at}: {transaction.content}</p>
-                <button className="btn btn-primary btn-block" onClick={()=>this.acceptTransaction(transaction._id)}>Accept</button>
-                <button className="btn btn-danger btn-block" onClick={()=>this.declineTransaction(transaction._id)}>Decline</button>
+                <p className="m-0">{t.sender} → {t.reciever} (¥ {t.amount})</p>
+                <p className="m-0">{(new Date(t.issued_at)).toLocaleString()} &lt; {t.content}</p>
+                <button className="btn btn-primary btn-block" onClick={()=>this.acceptTransaction(t._id)}>Accept</button>
+                <button className="btn btn-danger btn-block" onClick={()=>this.declineTransaction(t._id)}>Decline</button>
               </div>
             </div>
           ))}
-          <h1 className="display-6">Waiting Transaction</h1>
-          {this.state.transactions.filter(t=>!t.accepted_at&&t.accepter!==this.state.username).map((transaction,i)=>(
-            <div key={i} className="card">
+          <h1 className="display-6">Waiting Transaction <span>(¥ {
+            this.state.transactions.filter(t=>!t.accepted_at&&t.accepter!==this.state.username)
+            .map(t=>Number(t.amount) * (t.reciever==this.state.username ? 1 : -1)).reduce((a,b)=>a+b,0)
+          })</span></h1>
+          {this.state.transactions.filter(t=>!t.accepted_at&&t.accepter!==this.state.username).map((t,i)=>(
+            <div key={i} className={"card " + (t.reciever==this.state.username ? "border-info" : "border-warning")}>
               <div className="card-body">
-                <p>{transaction.sender} → {transaction.reciever} ({transaction.amount}円)</p>
-                <p>登録日時 {transaction.issued_at}: {transaction.content}</p>
+                <p className="m-0">{t.sender} → {t.reciever} (¥ {t.amount})</p>
+                <p className="m-0">{(new Date(t.issued_at)).toLocaleString()} &lt; {t.content}</p>
               </div>
             </div>
           ))}
-          <h1 className="display-6">Transaction</h1>
-          {this.state.transactions.filter(t=>!!t.accepted_at).map((transaction,i)=>(
-            <div key={i} className="card">
+          <h1 className="display-6">Transaction <span>(¥ {
+            this.state.transactions.filter(t=>!!t.accepted_at)
+            .map(t=>Number(t.amount) * (t.reciever==this.state.username ? 1 : -1)).reduce((a,b)=>a+b,0)
+          })</span></h1>
+          {this.state.transactions.filter(t=>!!t.accepted_at).map((t,i)=>(
+            <div key={i} className={"card " + (t.reciever==this.state.username ? "border-info" : "border-warning")}>
               <div className="card-body">
-                <p>{transaction.sender} → {transaction.reciever} ({transaction.amount}円)</p>
-                <p>登録日時 {transaction.issued_at}: {transaction.content}</p>
+                <p className="m-0">{t.sender} → {t.reciever} (¥ {t.amount})</p>
+                <p className="m-0">{(new Date(t.issued_at)).toLocaleString()} &lt; {t.content}</p>
               </div>
             </div>
           ))}

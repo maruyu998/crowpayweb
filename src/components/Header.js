@@ -31,7 +31,7 @@ export default class Header extends Component {
               <Link className='nav-link' to='/transactions'>Transactions</Link>
             </div>
           </div>
-          <span className="navbar-text">
+          <span className="navbar-text text-center">
             { !this.state.username && <Link className='nav-link' to='/signin'>Sign in</Link> }
             { !!this.state.username && <Link className='nav-link' to='/user'><img src={PersonImage} /><span>{this.state.username}</span></Link> }
           </span>
