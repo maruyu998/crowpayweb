@@ -33,7 +33,7 @@ export default class Home extends Component {
                 <Header />
                 <div className="container">
                     <div className="row">
-                        <div className="col col-12 col-sm-12 col-lg-8">
+                        <div className="col col-12 col-sm-12 col-md-8 order-2 order-md-1">
                             <div className="card">
                                 <div className="card-body">
                                     <p>残高</p>
@@ -41,7 +41,7 @@ export default class Home extends Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="col col-12 col-sm-12 col-lg-4">
+                        <div className="col col-12 col-sm-12 col-md-4 order-1 order-md-2">
                             <div className="row">
                                 <div className="col-4 text-center">
                                     <Link to='/send'>

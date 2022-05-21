@@ -71,10 +71,10 @@ export default class Request extends Component {
               <form className="row" onSubmit={this.request}>
                 <div className="col col-sm-12 col-md-3 border rounded mx-auto mt-2">
                   <div className="text-center mb-4">
-                    <h1 className="h3 mb-3 font-weight-normal">Reciever</h1>
+                    <h1 className="h3 mb-3 font-weight-normal">Sender</h1>
                     <p className="w-100 display-6">{this.state.username}</p>
                     <div class="input-group mb-1">
-                      <input className="w-100" type="text" id="content" placeholder="請求内容" required/>
+                      <input className="form-control" type="text" id="content" placeholder="請求内容" required/>
                     </div>
                   </div>
                 </div>
