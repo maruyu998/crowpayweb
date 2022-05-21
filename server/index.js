@@ -30,6 +30,10 @@ app.use(session({
     }
 }))
 
+
+app.use('/manifest.json', express.static(path.join(__dirname, "../build/manifest.json")))
+app.use('/robots.txt', express.static(path.join(__dirname, "../build/robots.txt")))
+
 const basicAuth = require("express-basic-auth")
 
 app.use(basicAuth({
@@ -41,6 +45,8 @@ app.use(basicAuth({
         return userMatch && passMatch;
     }
 }));
+
+
 app.use('/api', jsonParser, require('./router.js'));
 app.use(express.static(path.join(__dirname, "../build")))
 

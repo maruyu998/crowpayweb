@@ -5,10 +5,14 @@ const auth = require('./auth');
 const loginRequired = auth.loginRequired;
 const transaction = require('./transaction');
 const user = require('./user');
+const webpush = require('./webpush');
 
 // const { absolutePath } = require("swagger-ui-dist");
 // router.use('/swagger.yaml', express.static(path.join(__dirname, "./swagger.yaml")));
 // router.use(express.static(absolutePath()));
+
+router.get('/webpush', loginRequired, webpush.getPublicKey)
+router.post('/webpush', loginRequired, webpush.addSubscription)
 
 router.get('/getUsername', auth.getUsername)
 router.post('/signin', auth.signin)

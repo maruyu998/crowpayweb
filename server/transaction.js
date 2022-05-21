@@ -1,6 +1,7 @@
 const Transaction = require('./db/transaction');
 const Friend = require('./db/friend');
 const User = require('./db/user');
+const webpush = require('./webpush.js')
 
 module.exports.getTransactions = async (req, res) => {
     const username = req.session.username;
@@ -42,13 +43,13 @@ module.exports.addTransaction = async (req, res) => {
         })
         return
     }
-    if(!await Friend.findOne({username, friendname: accepter}).exec()){
+    if(!await Friend.findOne({username, friendname: accepter, accepted: true}).exec()){
         res.json({
             messages: [{type:'warning', text:'invalid request. accepter is invalid.'}]
         })
         return
     }
-    await Transaction({
+    const transaction = await Transaction({
         issuer: username,
         issued_at: new Date(),
         accepter, 
@@ -58,6 +59,7 @@ module.exports.addTransaction = async (req, res) => {
     res.json({
         messages: [{type:'info', text:'transaction issued successfully.'}]
     })
+    webpush.sendRequestForAcceptTransaction(transaction);
 }
 
 module.exports.acceptTransaction = async (req, res) => {
@@ -84,16 +86,17 @@ module.exports.acceptTransaction = async (req, res) => {
         {username: transaction.reciever},
         {$inc:{ amount: transaction.amount }}
     )
-
     res.json({
         messages: [{type: 'info', text: 'transcation is accepted successfully.'}]
     })
+    webpush.sendMessageForAcceptTransaction(transaction);
 }
 
 module.exports.declineTransaction = async (req, res) => {
     const username = req.session.username;
     const transaction_id = req.body.transaction_id;
-    if(!await Transaction.findOne({accepter: username, _id: transaction_id, accepted_at: null}).exec()){
+    const transaction = await Transaction.findOne({accepter: username, _id: transaction_id, accepted_at: null}).exec();
+    if(!transaction){
         res.json({
             messages: [{type: 'warning', text: 'transaction is not found.'}]
         })
@@ -103,4 +106,5 @@ module.exports.declineTransaction = async (req, res) => {
     res.json({
         messages: [{type: 'info', text: 'declined transaction successfully.'}]
     });
+    webpush.sendMessageForDeclineTransaction(transaction);
 }

@@ -25,6 +25,7 @@
     -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/0.0.11/push.min.js"></script>
     <title>CrowPay</title>
   </head>
   <body>
@@ -41,11 +42,49 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
     <script>
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js')
+      function urlBase64ToUint8Array(base64String) {
+        if(base64String == undefined) return;
+        const padding = '='.repeat((4 - base64String.length % 4) % 4);
+        const base64 = (base64String + padding)
+          .replace(/\-/g, '+')
+          .replace(/_/g, '/');
+        const rawData = window.atob(base64);
+        if(rawData == undefined) return;
+        const outputArray = new Uint8Array(rawData.length);
+        for (let i = 0; i < rawData.length; ++i) {
+          outputArray[i] = rawData.charCodeAt(i);
+        }
+        return outputArray;
+      }
+      ;(async ()=>{
+        if (!('serviceWorker' in navigator)) return;
+        Push.Permission.request();
+        await navigator.serviceWorker.register('service-worker.js')
         .then(registration=>console.log('ServiceWorker registration successful with scope: ', registration.scope))
         .catch(err=> console.log('ServiceWorker registration failed: ',err));
-      }
+
+        const validkey = await fetch('/api/webpush').then(res=>res.json()).then(res=>res.publicKey).then(key=>urlBase64ToUint8Array(key))
+
+        await navigator.serviceWorker.ready.then(registration=>{
+          Notification.requestPermission(permission=>{
+            if(permission == 'denied') throw Error("notification is denied")
+          })
+          return registration
+        })
+        .then(registration => registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: validkey
+        }))
+        .then(subscription => {
+          fetch('/api/webpush', {
+            method:"POST", 
+            headers:{"Content-Type":"application/json"}, 
+            body: JSON.stringify({subscription})
+          })
+        })
+        .catch(e=>console.error(e))
+      })()
+    </script>
     </script>
   </body>
 </html>
