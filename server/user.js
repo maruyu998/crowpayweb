@@ -5,6 +5,13 @@ const webpush = require('./webpush');
 module.exports.getSummary = async (req, res) => {
     const username = req.session.username;
     const user = await User.findOne({username}).exec();
+    if(!user){
+        res.json({
+            messages: [{type: 'warning', text: 'user do not exist.'}],
+            redirect: '/signin'
+        })
+        return
+    }
     res.json({
         messages: [],
         username: username,

@@ -42,7 +42,7 @@ module.exports.signup = async (req, res) => {
     await user.save()
     res.json({ 
         messages: [{type: 'info', text: 'registration successed.'}],
-        redirect: '/'
+        redirect: '/signin'
     })
 }
 
