@@ -4,7 +4,6 @@ self.addEventListener('fetch', function(event) {});
 
 self.addEventListener('push', function(event) {
     const payload = event.data.json()
-    console.log(payload)
     event.waitUntil(
       self.registration.showNotification(payload.title, {
           body: payload.body,

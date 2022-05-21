@@ -14,7 +14,6 @@ export default class Transaction extends Component {
 	}
   componentDidMount(){
     fetch('/api/getTransactions').then(res=>res.json()).then(res=>{
-      console.log(res)
       this.setState({username: res.username})
       this.setState({transactions: res.transactions || []})
       this.setState({redirect: res.redirect});

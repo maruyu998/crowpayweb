@@ -17,7 +17,6 @@ module.exports.addSubscription = (req, res) => {
     if(subscriptions[username] === undefined) subscriptions[username] = {}
     const subscription = req.body.subscription
     subscriptions[username][subscription.endpoint] = subscription
-    console.log(subscriptions)
     res.send('ok')
 }
 

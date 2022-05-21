@@ -15,7 +15,6 @@ export default class User extends Component {
   }
   componentDidMount(){
     fetch('/api/getUserFriends').then(res=>res.json()).then(res=>{
-      console.log(res)
       this.setState({username: res.username});
       this.setState({friends: res.friends || []});
       this.setState({requested_friends: res.requested_friends || []});
@@ -30,7 +29,6 @@ export default class User extends Component {
       headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
       body: JSON.stringify({ friendname: name })
     }).then(res=>res.json()).then(res=>{
-      console.log(res)
       this.setState({messages: res.messages})
       this.setState({redirect: res.redirect})
     })
@@ -41,7 +39,6 @@ export default class User extends Component {
       headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
       body: JSON.stringify({ friendname })
     }).then(res=>res.json()).then(res=>{
-      console.log(res)
       this.setState({messages: res.messages})
       this.setState({redirect: res.redirect})
     })
