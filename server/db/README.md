@@ -3,17 +3,16 @@
 ## User
 - username: str # unique
 - passhash: str # hashed password
-- groups: list
+<!-- - groups: list
     - id
-    - archived: boolean
-- amount: int # 残高
+    - amount: int # 残高 -->
 
-## Group
+<!-- ## Group
 - id
 - groupname: str
 - members: list
     - username
-    - accepted: boolean
+    - accepted: boolean -->
 
 ## Transaction
 - id
@@ -22,10 +21,10 @@
 - acceptor # 取引受任者
 - accepted_at # 受任日時
 - sender # 支払い者
-- reciever # 受け取り者
+- receiver # 受け取り者
 - amount # 取引金額(正)
 - contents # 取引内容
-- accepted # bool・全ステークホールダーが認証し，取引が完了した時のフラグ
+<!-- - groupid # グループ単位 -->
 
 ## Friend # 今のところ相互に登録し合う
 - username
