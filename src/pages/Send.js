@@ -12,7 +12,7 @@ export default class Send extends Component {
           friends: [],
           messages: [],
           redirect: null,
-          keep_recievers: []
+          keep_receivers: []
         }
       }
       componentDidMount(){
@@ -28,11 +28,11 @@ export default class Send extends Component {
       }
       send = (e) => {
         const content = e.target.content.value;
-        for(let data of this.state.keep_recievers){
+        for(let data of this.state.keep_receivers){
           fetch('/api/addTransaction', {
             method: "POST",
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-            body: JSON.stringify({ reciever: data.friend, amount: data.amount, content })
+            body: JSON.stringify({ receiver: data.friend, amount: data.amount, content })
           }).then(res=>res.json()).then(res=>{ 
             this.setState({messages: [...this.state.messages, ...res.messages]}) 
             this.setState({redirect: res.redirect}) 
@@ -40,23 +40,23 @@ export default class Send extends Component {
         }
       }
       addRow = () => {
-        this.setState({ keep_recievers: [...this.state.keep_recievers, {id:new Date().getTime(), friendname:'', amount:0}] }) 
+        this.setState({ keep_receivers: [...this.state.keep_receivers, {id:new Date().getTime(), friendname:'', amount:0}] }) 
       }
       deleteRow = (i) => {
-        const keep_recievers = this.state.keep_recievers;
-        keep_recievers.splice(i,1);
-        this.setState({ keep_recievers });
-        if(this.state.keep_recievers.length == 0) this.addRow();
+        const keep_receivers = this.state.keep_receivers;
+        keep_receivers.splice(i,1);
+        this.setState({ keep_receivers });
+        if(this.state.keep_receivers.length == 0) this.addRow();
       }
-      updateRecieverFriend = (value, i) => {
-        const keep_recievers = this.state.keep_recievers;
-        keep_recievers[i].friend = value;
-        this.setState({keep_recievers})
+      updatereceiverFriend = (value, i) => {
+        const keep_receivers = this.state.keep_receivers;
+        keep_receivers[i].friend = value;
+        this.setState({keep_receivers})
       }
-      updateRecieverAmount = (value, i) => {
-        const keep_recievers = this.state.keep_recievers;
-        keep_recievers[i].amount = Number(value);
-        this.setState({keep_recievers})
+      updatereceiverAmount = (value, i) => {
+        const keep_receivers = this.state.keep_receivers;
+        keep_receivers[i].amount = Number(value);
+        this.setState({keep_receivers})
       }
     
       render(){
@@ -86,24 +86,24 @@ export default class Send extends Component {
                 </div>
                 <div className="col col-sm-12 col-md-8 border rounded mx-auto mt-2">
                   <div className="text-center mb-4">
-                    <h1 className="h3 mb-3 font-weight-normal">Reciever</h1>
+                    <h1 className="h3 mb-3 font-weight-normal">receiver</h1>
                   </div>
                   {
-                    this.state.keep_recievers.map((r,i)=>(
+                    this.state.keep_receivers.map((r,i)=>(
                       <div key={r.id} class="input-group mb-1">
-                        <select className="form-select" onChange={e=>this.updateRecieverFriend(e.target.value,i)} required>
+                        <select className="form-select" onChange={e=>this.updatereceiverFriend(e.target.value,i)} required>
                           <option hidden value="">Select Friend</option>
                           {
                             this.getFriendCands().map((f,i)=><option key={i} value={f}>{f}</option>)
                           }
                         </select>
                         {/* <input className="form-control" type="text" autocomplete="on" list="friend_list" placeholder="friendname"  required/> */}
-                        <input className="form-control" type="number" placeholder="支払金額" min="1" step="1" onChange={e=>this.updateRecieverAmount(e.target.value,i)} required/>
+                        <input className="form-control" type="number" placeholder="支払金額" min="1" step="1" onChange={e=>this.updatereceiverAmount(e.target.value,i)} required/>
                         <button type="button" className="btn btn-outline-secondary" onClick={()=>this.deleteRow(i)}>x</button>
                       </div>
                     ))
                   }
-                  <p>合計支払い金額: ¥ {this.state.keep_recievers.map(r=>r.amount).reduce((a,b)=>a+b,0)}</p>
+                  <p>合計支払い金額: ¥ {this.state.keep_receivers.map(r=>r.amount).reduce((a,b)=>a+b,0)}</p>
                   <button type="button" className="btn btn-primary btn-block mb-2" onClick={this.addRow}>Add</button>
                 </div>
                 <div className="col-12 p-0 d-grid">

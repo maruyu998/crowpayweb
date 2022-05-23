@@ -6,7 +6,7 @@ const webpush = require('./webpush.js')
 module.exports.getTransactions = async (req, res) => {
     const username = req.session.username;
     const transactions = await Transaction.find({
-        $or: [{sender: username}, {reciever: username}]
+        $or: [{sender: username}, {receiver: username}]
     }).exec();
     res.json({
         messages: [],
@@ -17,7 +17,7 @@ module.exports.getTransactions = async (req, res) => {
 
 module.exports.addTransaction = async (req, res) => {
     const username = req.session.username;
-    let { reciever, sender, amount, content, raw_amount, rate, unit } = req.body;
+    let { receiver, sender, amount, content, raw_amount, rate, unit } = req.body;
     let accepter;
     if(amount <= 0) {
         res.json({
@@ -31,15 +31,15 @@ module.exports.addTransaction = async (req, res) => {
         })
         return
     }
-    if(!reciever && !!sender){
-        reciever = username
+    if(!receiver && !!sender){
+        receiver = username
         accepter = sender
-    }else if(!!reciever && !sender){
+    }else if(!!receiver && !sender){
         sender = username
-        accepter = reciever
+        accepter = receiver
     }else{
         res.json({
-            messages: [{type:'warning', text:'invalid request. reciever or sender is required and another is not required.'}]
+            messages: [{type:'warning', text:'invalid request. receiver or sender is required and another is not required.'}]
         })
         return
     }
@@ -53,7 +53,7 @@ module.exports.addTransaction = async (req, res) => {
         issuer: username,
         issued_at: new Date(),
         accepter, 
-        sender, reciever, amount, content, raw_amount, rate, unit, 
+        sender, receiver, amount, content, raw_amount, rate, unit, 
         accepted: false
     }).save()
     res.json({
@@ -83,7 +83,7 @@ module.exports.acceptTransaction = async (req, res) => {
         {$inc:{ amount: transaction.amount * -1 }}
     )
     await User.findOneAndUpdate(
-        {username: transaction.reciever},
+        {username: transaction.receiver},
         {$inc:{ amount: transaction.amount }}
     )
     res.json({
