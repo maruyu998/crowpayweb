@@ -8,6 +8,7 @@ mongoose.connection.on('error', function(err) {
     console.error('MongoDB connection error: ' + err);
     process.exit(-1);
 });
+const MongoStore = require('connect-mongo');
 
 const jsonParser = require('body-parser').json()
 const session = require('express-session');
@@ -21,12 +22,17 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(session({
     secret: config.session_secret,
+    store: MongoStore.create({
+        mongoUrl: config.mongo_path,
+        collectionName: 'sessions',
+        autoRemove: 'native'
+    }),
     resave: false,
     saveUninitialized: false,
     cookie: {
         httpOnly: true,
         // secure: true,
-        maxage: 1000 * 60 * 30
+        maxage: 1000 * 60 * 60 * 24 * 3
     }
 }))
 
