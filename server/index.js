@@ -40,17 +40,16 @@ app.use(session({
 app.use('/manifest.json', express.static(path.join(__dirname, "../build/manifest.json")))
 app.use('/robots.txt', express.static(path.join(__dirname, "../build/robots.txt")))
 
-const basicAuth = require("express-basic-auth")
-
-app.use(basicAuth({
-    challenge: true,
-    unauthorizedResponse: () => "Unauthorized",
-    authorizer: (username, password) => {
-        const userMatch = basicAuth.safeCompare(username, config.basic_auth_username);
-        const passMatch = basicAuth.safeCompare(password, config.basic_auth_password);
-        return userMatch && passMatch;
-    }
-}));
+// const basicAuth = require("express-basic-auth")
+// app.use(basicAuth({
+//     challenge: true,
+//     unauthorizedResponse: () => "Unauthorized",
+//     authorizer: (username, password) => {
+//         const userMatch = basicAuth.safeCompare(username, config.basic_auth_username);
+//         const passMatch = basicAuth.safeCompare(password, config.basic_auth_password);
+//         return userMatch && passMatch;
+//     }
+// }));
 
 
 app.use('/api', jsonParser, require('./router.js'));
