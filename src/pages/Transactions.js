@@ -1,5 +1,5 @@
 import { Component } from "react";
-import Header from '../components/Header';
+import Header from '../components/Header.js';
 import { Navigate } from 'react-router-dom';
 
 export default class Transaction extends Component {

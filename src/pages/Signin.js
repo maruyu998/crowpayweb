@@ -1,7 +1,7 @@
 import { Component } from "react";
 import { Link, Navigate } from 'react-router-dom';
 import LogoImage from "../images/logo.png";
-import Header from '../components/Header';
+import Header from '../components/Header.js';
 
 export default class Signin extends Component {
   constructor(props){

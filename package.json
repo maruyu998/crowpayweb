@@ -22,6 +22,7 @@
   "scripts": {
     "start": "react-scripts start && nodemon server/index.js",
     "build": "react-scripts build && node server/index.js",
+    "server": "node server/index.js",
     "rstart": "PORT=3001 BROWSER=none react-scripts start",
     "rbuild": "react-scripts build",
     "test": "react-scripts test",
@@ -46,5 +47,6 @@
       "last 1 safari version"
     ]
   },
+  "type": "module",
   "proxy": "http://localhost:4000"
 }

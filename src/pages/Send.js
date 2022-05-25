@@ -1,6 +1,6 @@
 import { Component } from "react";
 import { Navigate } from 'react-router-dom';
-import Header from '../components/Header';
+import Header from '../components/Header.js';
 import RightArrowIcon from '../images/caret-right-fill.svg'
 import BottomArrowIcon from '../images/caret-down-fill.svg'
 
@@ -86,7 +86,7 @@ export default class Send extends Component {
                 </div>
                 <div className="col col-sm-12 col-md-8 border rounded mx-auto mt-2">
                   <div className="text-center mb-4">
-                    <h1 className="h3 mb-3 font-weight-normal">receiver</h1>
+                    <h1 className="h3 mb-3 font-weight-normal">Receiver</h1>
                   </div>
                   {
                     this.state.keep_receivers.map((r,i)=>(

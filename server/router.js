@@ -1,12 +1,11 @@
-const path = require('path');
-const express = require('express');
-const router = express.Router();
-const auth = require('./auth');
-const loginRequired = auth.loginRequired;
-const transaction = require('./transaction');
-const user = require('./user');
-const webpush = require('./webpush');
+import express from 'express';
+import transaction from './transaction.js';
+import user from './user.js';
+import webpush from './webpush.js';
+import auth from './auth.js';
 
+const loginRequired = auth.loginRequired;
+const router = express.Router();
 // const { absolutePath } = require("swagger-ui-dist");
 // router.use('/swagger.yaml', express.static(path.join(__dirname, "./swagger.yaml")));
 // router.use(express.static(absolutePath()));
@@ -29,4 +28,4 @@ router.get('/getUserFriends', loginRequired, user.getUserFriends)
 router.post('/requestAddFriend', loginRequired, user.requestAddFriend)
 router.post('/acceptFriend', loginRequired, user.acceptFriend)
 
-module.exports = router
+export default router;

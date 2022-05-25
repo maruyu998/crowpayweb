@@ -1,110 +1,112 @@
-const Transaction = require('./db/transaction');
-const Friend = require('./db/friend');
-const User = require('./db/user');
-const webpush = require('./webpush.js')
+import Transaction from './db/transaction.js';
+import Friend from './db/friend.js';
+import User from './db/user.js';
+import webpush from './webpush.js';
 
-module.exports.getTransactions = async (req, res) => {
-    const username = req.session.username;
-    const transactions = await Transaction.find({
-        $or: [{sender: username}, {receiver: username}]
-    }).exec();
-    res.json({
-        messages: [],
-        username: username,
-        transactions: transactions
-    })
-}
-
-module.exports.addTransaction = async (req, res) => {
-    const username = req.session.username;
-    let { receiver, sender, amount, content, raw_amount, rate, unit } = req.body;
-    let accepter;
-    if(amount <= 0) {
+export default class {
+    static getTransactions = async (req, res) => {
+        const username = req.session.username;
+        const transactions = await Transaction.find({
+            $or: [{sender: username}, {receiver: username}]
+        }).exec();
         res.json({
-            messages: [{type: 'warning', text: 'amount must be positive.'}]
+            messages: [],
+            username: username,
+            transactions: transactions
         })
-        return;
     }
-    if(!content){
+    
+    static addTransaction = async (req, res) => {
+        const username = req.session.username;
+        let { receiver, sender, amount, content, raw_amount, rate, unit } = req.body;
+        let accepter;
+        if(amount <= 0) {
+            res.json({
+                messages: [{type: 'warning', text: 'amount must be positive.'}]
+            })
+            return;
+        }
+        if(!content){
+            res.json({
+                messages: [{type:'warning', text:'invalid request. content is required.'}]
+            })
+            return
+        }
+        if(!receiver && !!sender){
+            receiver = username
+            accepter = sender
+        }else if(!!receiver && !sender){
+            sender = username
+            accepter = receiver
+        }else{
+            res.json({
+                messages: [{type:'warning', text:'invalid request. receiver or sender is required and another is not required.'}]
+            })
+            return
+        }
+        if(!await Friend.findOne({username, friendname: accepter, accepted: true}).exec()){
+            res.json({
+                messages: [{type:'warning', text:'invalid request. accepter is invalid.'}]
+            })
+            return
+        }
+        const transaction = await Transaction({
+            issuer: username,
+            issued_at: new Date(),
+            accepter, 
+            sender, receiver, amount, content, raw_amount, rate, unit, 
+            accepted: false
+        }).save()
         res.json({
-            messages: [{type:'warning', text:'invalid request. content is required.'}]
+            messages: [{type:'info', text:'transaction issued successfully.'}]
         })
-        return
+        webpush.sendRequestForAcceptTransaction(transaction);
     }
-    if(!receiver && !!sender){
-        receiver = username
-        accepter = sender
-    }else if(!!receiver && !sender){
-        sender = username
-        accepter = receiver
-    }else{
+    
+    static acceptTransaction = async (req, res) => {
+        const username = req.session.username;
+        const transaction_id = req.body.transaction_id
+        const transaction = await Transaction.findOne({
+            accepter: username, _id: transaction_id, accepted_at: null
+        }).exec();
+        if(!transaction){
+            res.json({
+                messages: [{type: 'warning', text: 'transaction is not found.'}]
+            })
+            return
+        }
+        await Transaction.findOneAndUpdate(
+            {_id: transaction_id}, 
+            {accepted: true, accepted_at: new Date()}
+        ).exec();
+        await User.findOneAndUpdate(
+            {username: transaction.sender},
+            {$inc:{ amount: transaction.amount * -1 }}
+        )
+        await User.findOneAndUpdate(
+            {username: transaction.receiver},
+            {$inc:{ amount: transaction.amount }}
+        )
         res.json({
-            messages: [{type:'warning', text:'invalid request. receiver or sender is required and another is not required.'}]
+            messages: [{type: 'info', text: 'transcation is accepted successfully.'}]
         })
-        return
+        webpush.sendMessageForAcceptTransaction(transaction);
     }
-    if(!await Friend.findOne({username, friendname: accepter, accepted: true}).exec()){
+    
+    static declineTransaction = async (req, res) => {
+        const username = req.session.username;
+        const transaction_id = req.body.transaction_id;
+        const transaction = await Transaction.findOne({accepter: username, _id: transaction_id, accepted_at: null}).exec();
+        if(!transaction){
+            res.json({
+                messages: [{type: 'warning', text: 'transaction is not found.'}]
+            })
+            return
+        }
+        await Transaction.findOneAndRemove({_id: transaction_id});
         res.json({
-            messages: [{type:'warning', text:'invalid request. accepter is invalid.'}]
-        })
-        return
+            messages: [{type: 'info', text: 'declined transaction successfully.'}]
+        });
+        webpush.sendMessageForDeclineTransaction(transaction);
     }
-    const transaction = await Transaction({
-        issuer: username,
-        issued_at: new Date(),
-        accepter, 
-        sender, receiver, amount, content, raw_amount, rate, unit, 
-        accepted: false
-    }).save()
-    res.json({
-        messages: [{type:'info', text:'transaction issued successfully.'}]
-    })
-    webpush.sendRequestForAcceptTransaction(transaction);
-}
-
-module.exports.acceptTransaction = async (req, res) => {
-    const username = req.session.username;
-    const transaction_id = req.body.transaction_id
-    const transaction = await Transaction.findOne({
-        accepter: username, _id: transaction_id, accepted_at: null
-    }).exec();
-    if(!transaction){
-        res.json({
-            messages: [{type: 'warning', text: 'transaction is not found.'}]
-        })
-        return
-    }
-    await Transaction.findOneAndUpdate(
-        {_id: transaction_id}, 
-        {accepted: true, accepted_at: new Date()}
-    ).exec();
-    await User.findOneAndUpdate(
-        {username: transaction.sender},
-        {$inc:{ amount: transaction.amount * -1 }}
-    )
-    await User.findOneAndUpdate(
-        {username: transaction.receiver},
-        {$inc:{ amount: transaction.amount }}
-    )
-    res.json({
-        messages: [{type: 'info', text: 'transcation is accepted successfully.'}]
-    })
-    webpush.sendMessageForAcceptTransaction(transaction);
-}
-
-module.exports.declineTransaction = async (req, res) => {
-    const username = req.session.username;
-    const transaction_id = req.body.transaction_id;
-    const transaction = await Transaction.findOne({accepter: username, _id: transaction_id, accepted_at: null}).exec();
-    if(!transaction){
-        res.json({
-            messages: [{type: 'warning', text: 'transaction is not found.'}]
-        })
-        return
-    }
-    await Transaction.findOneAndRemove({_id: transaction_id});
-    res.json({
-        messages: [{type: 'info', text: 'declined transaction successfully.'}]
-    });
-    webpush.sendMessageForDeclineTransaction(transaction);
 }

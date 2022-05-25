@@ -1,23 +1,24 @@
-const config = require('config');
-const path = require('path');
+import config from 'config';
+import path from 'path';
+import mongoose from 'mongoose';
+import MongoStore from 'connect-mongo';
+import express from 'express';
+import bodyParser from 'body-parser';
+import session from 'express-session';
+import router from './router.js';
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 mongoose.connect(config.mongo_path);
 mongoose.connection.on('error', function(err) {
     console.error('MongoDB connection error: ' + err);
     process.exit(-1);
 });
-const MongoStore = require('connect-mongo');
 
-const jsonParser = require('body-parser').json()
-const session = require('express-session');
 
-const express = require('express');
-const bodyParser = require('body-parser');
-// const cookieParser = require('cookie-parser'); 
 const app = express();
-// app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(session({
@@ -52,7 +53,7 @@ app.use('/robots.txt', express.static(path.join(__dirname, "../build/robots.txt"
 // }));
 
 
-app.use('/api', jsonParser, require('./router.js'));
+app.use('/api', bodyParser.json(), router);
 app.use(express.static(path.join(__dirname, "../build")))
 
 app.listen(9200, ()=>{

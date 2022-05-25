@@ -3,7 +3,7 @@ import { Navigate, Link } from 'react-router-dom';
 import RequestIcon from '../images/request.svg';
 import SendIcon from '../images/send.svg';
 import OtherIcon from '../images/three-dots.svg';
-import Header from '../components/Header';
+import Header from '../components/Header.js';
 
 export default class Home extends Component {
     constructor(props){
