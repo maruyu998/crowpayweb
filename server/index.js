@@ -56,6 +56,6 @@ app.use('/robots.txt', express.static(path.join(__dirname, "../build/robots.txt"
 app.use('/api', bodyParser.json(), router);
 app.use(express.static(path.join(__dirname, "../build")))
 
-app.listen(9200, ()=>{
+app.listen(process.env.SERVER_PORT || 9200, ()=>{
     console.log('express app is listening')
 });
