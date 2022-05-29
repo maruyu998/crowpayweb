@@ -50,40 +50,40 @@ export default class Transaction extends Component {
             {this.state.messages.map(message=><div className={'alert alert-'+message.type} role="alert">{message.text}</div>)}
             {this.state.redirect && <Navigate to={this.state.redirect}/>}
           </div>
-          <h1 className="display-6">Accept Transaction <span>(¥ {
+          <h1 className="display-6">Accept Transaction <span>(€ {
             this.state.transactions.filter(t=>!t.accepted_at&&t.accepter==this.state.username)
             .map(t=>Number(t.amount) * (t.receiver==this.state.username ? 1 : -1)).reduce((a,b)=>a+b,0)
           })</span></h1>
           {this.state.transactions.filter(t=>!t.accepted_at&&t.accepter==this.state.username).map((t,i)=>(
             <div key={i} className={"card " + (t.receiver==this.state.username ? "border-info" : "border-warning")}>
               <div className="card-body">
-                <p className="m-0">{t.sender} → {t.receiver} (¥ {t.amount})</p>
+                <p className="m-0">{t.sender} → {t.receiver} (€ {t.amount})</p>
                 <p className="m-0">{(new Date(t.issued_at)).toLocaleString()} &lt; {t.content}</p>
                 <button className="btn btn-primary btn-block" onClick={()=>this.acceptTransaction(t._id)}>Accept</button>
                 <button className="btn btn-danger btn-block" onClick={()=>this.declineTransaction(t._id)}>Decline</button>
               </div>
             </div>
           ))}
-          <h1 className="display-6">Waiting Transaction <span>(¥ {
+          <h1 className="display-6">Waiting Transaction <span>(€ {
             this.state.transactions.filter(t=>!t.accepted_at&&t.accepter!==this.state.username)
             .map(t=>Number(t.amount) * (t.receiver==this.state.username ? 1 : -1)).reduce((a,b)=>a+b,0)
           })</span></h1>
           {this.state.transactions.filter(t=>!t.accepted_at&&t.accepter!==this.state.username).map((t,i)=>(
             <div key={i} className={"card " + (t.receiver==this.state.username ? "border-info" : "border-warning")}>
               <div className="card-body">
-                <p className="m-0">{t.sender} → {t.receiver} (¥ {t.amount})</p>
+                <p className="m-0">{t.sender} → {t.receiver} (€ {t.amount})</p>
                 <p className="m-0">{(new Date(t.issued_at)).toLocaleString()} &lt; {t.content}</p>
               </div>
             </div>
           ))}
-          <h1 className="display-6">Transaction <span>(¥ {
+          <h1 className="display-6">Transaction <span>(€ {
             this.state.transactions.filter(t=>!!t.accepted_at)
             .map(t=>Number(t.amount) * (t.receiver==this.state.username ? 1 : -1)).reduce((a,b)=>a+b,0)
           })</span></h1>
           {this.state.transactions.filter(t=>!!t.accepted_at).map((t,i)=>(
             <div key={i} className={"card " + (t.receiver==this.state.username ? "border-info" : "border-warning")}>
               <div className="card-body">
-                <p className="m-0">{t.sender} → {t.receiver} (¥ {t.amount})</p>
+                <p className="m-0">{t.sender} → {t.receiver} (€ {t.amount})</p>
                 <p className="m-0">{(new Date(t.issued_at)).toLocaleString()} &lt; {t.content}</p>
               </div>
             </div>

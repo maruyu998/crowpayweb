@@ -103,7 +103,7 @@ export default class Send extends Component {
                       </div>
                     ))
                   }
-                  <p>合計支払い金額: ¥ {this.state.keep_receivers.map(r=>r.amount).reduce((a,b)=>a+b,0)}</p>
+                  <p>合計支払い金額: € {this.state.keep_receivers.map(r=>r.amount).reduce((a,b)=>a+b,0)}</p>
                   <button type="button" className="btn btn-primary btn-block mb-2" onClick={this.addRow}>Add</button>
                 </div>
                 <div className="col-12 p-0 d-grid">

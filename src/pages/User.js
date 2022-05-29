@@ -77,8 +77,8 @@ export default class User extends Component {
                     <div className="card">
                       <div className="card-body">
                         <p className="display-6 m-0">{f.username}</p>
-                        <p className="display-7 m-0">¥ {f.amount} </p>
-                        <p className="display-7 m-0">friends' sum: ¥ {f.friendsamount}</p>
+                        <p className="display-7 m-0">€ {f.amount} </p>
+                        <p className="display-7 m-0">friends' sum: € {f.friendsamount}</p>
                       </div>
                     </div>
                   </div>
