@@ -20,6 +20,12 @@ export default class {
         const username = req.session.username;
         let { receiver, sender, amount, content, raw_amount, rate, unit } = req.body;
         let accepter;
+        if(!Number.isInteger(amount)){
+            res.json({
+                messages: [{type: 'warning', text: 'amount must be integer.'}]
+            })
+            return;
+        }
         if(amount <= 0) {
             res.json({
                 messages: [{type: 'warning', text: 'amount must be positive.'}]
@@ -41,6 +47,18 @@ export default class {
         }else{
             res.json({
                 messages: [{type:'warning', text:'invalid request. receiver or sender is required and another is not required.'}]
+            })
+            return
+        }
+        if(username==accepter){
+            res.json({
+                messages: [{type:'warning', text:'invalid request. accepter is invalid.'}]
+            })
+            return
+        }
+        if(amount>1000000){
+            res.json({
+                messages: [{type:'warning', text:'invalid request. amount is too numerous.'}]
             })
             return
         }
