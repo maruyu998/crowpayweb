@@ -55,7 +55,7 @@ export default class Transaction extends Component {
             .map(t=>Number(t.amount) * (t.receiver==this.state.username ? 1 : -1)).reduce((a,b)=>a+b,0)
           })</span></h1>
           {this.state.transactions.filter(t=>!t.accepted_at&&t.accepter==this.state.username).map((t,i)=>(
-            <div key={i} className={"card " + (t.receiver==this.state.username ? "border-info" : "border-warning")}>
+            <div key={i} className={"card " + (t.receiver==this.state.username ? "border-info" : "border-danger") + " mb-1"}>
               <div className="card-body">
                 <p className="m-0">{t.sender} → {t.receiver} (¥ {t.amount})</p>
                 <p className="m-0">{(new Date(t.issued_at)).toLocaleString()} &lt; {t.content}</p>
@@ -69,7 +69,7 @@ export default class Transaction extends Component {
             .map(t=>Number(t.amount) * (t.receiver==this.state.username ? 1 : -1)).reduce((a,b)=>a+b,0)
           })</span></h1>
           {this.state.transactions.filter(t=>!t.accepted_at&&t.accepter!==this.state.username).map((t,i)=>(
-            <div key={i} className={"card " + (t.receiver==this.state.username ? "border-info" : "border-warning")}>
+            <div key={i} className={"card " + (t.receiver==this.state.username ? "border-info" : "border-danger") + " mb-1"}>
               <div className="card-body">
                 <p className="m-0">{t.sender} → {t.receiver} (¥ {t.amount})</p>
                 <p className="m-0">{(new Date(t.issued_at)).toLocaleString()} &lt; {t.content}</p>
@@ -81,7 +81,7 @@ export default class Transaction extends Component {
             .map(t=>Number(t.amount) * (t.receiver==this.state.username ? 1 : -1)).reduce((a,b)=>a+b,0)
           })</span></h1>
           {this.state.transactions.filter(t=>!!t.accepted_at).map((t,i)=>(
-            <div key={i} className={"card " + (t.receiver==this.state.username ? "border-info" : "border-warning")}>
+            <div key={i} className={"card " + (t.receiver==this.state.username ? "border-info" : "border-danger") + " mb-1"}>
               <div className="card-body">
                 <p className="m-0">{t.sender} → {t.receiver} (¥ {t.amount})</p>
                 <p className="m-0">{(new Date(t.issued_at)).toLocaleString()} &lt; {t.content}</p>
