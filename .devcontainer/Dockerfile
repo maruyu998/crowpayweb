@@ -21,25 +21,12 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 # ARG EXTRA_NODE_VERSION=10
 # RUN su node -c "source /usr/local/share/nvm/nvm.sh && nvm install ${EXTRA_NODE_VERSION}"
 
+USER node
 # [Optional] Uncomment if you want to install more global node modules
 # いらんかもしれん
-USER node
 RUN npm install -g nodemon
 
 WORKDIR /workspace
 COPY --chown=node:node ./package.json ./package-lock.json /workspace/
 RUN npm install
 COPY --chown=node:node . .
-
-RUN { \
-    echo 'module.exports = {'; \
-    echo '  session_secret: "crowpay",'; \
-    echo '  hash_salt: "crowpay",'; \
-    echo '  basic_auth_username: "username",'; \
-    echo '  basic_auth_password: "password",'; \
-    echo '  mongo_path: "mongodb://root:example@db/crowpay",'; \
-    keys=$(node_modules/.bin/web-push generate-vapid-keys --json); \
-    echo '  webpush_public_key: '$(echo $keys | jq '.publicKey')','; \
-    echo '  webpush_private_key: '$(echo $keys | jq '.privateKey'); \
-    echo '}'; \
-    } >> config/secret.cjs
