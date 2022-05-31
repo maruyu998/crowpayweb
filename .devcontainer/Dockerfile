@@ -21,12 +21,9 @@ RUN . /etc/os-release \
 # ARG EXTRA_NODE_VERSION=10
 # RUN su node -c "source /usr/local/share/nvm/nvm.sh && nvm install ${EXTRA_NODE_VERSION}"
 
-USER node
-# [Optional] Uncomment if you want to install more global node modules
-# いらんかもしれん
-RUN npm install -g nodemon
-
 WORKDIR /workspace
-COPY --chown=node:node ./package.json ./package-lock.json /workspace/
-RUN npm install
-COPY --chown=node:node . .
+RUN mkdir -p node_modules && \
+    chown -R node:node node_modules
+
+USER node
+RUN npm install -g nodemon
