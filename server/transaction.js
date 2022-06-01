@@ -127,4 +127,21 @@ export default class {
         });
         webpush.sendMessageForDeclineTransaction(transaction);
     }
+
+    static cancelTransaction = async (req, res) => {
+        const username = req.session.username;
+        const transaction_id = req.body.transaction_id;
+        const transaction = await Transaction.findOne({issuer: username, _id: transaction_id, accepted_at: null}).exec();
+        if(!transaction){
+            res.json({
+                messages: [{type: 'warning', text: 'transaction is not found.'}]
+            })
+            return
+        }
+        await Transaction.findOneAndRemove({_id: transaction_id});
+        res.json({
+            messages: [{type: 'info', text: 'cancel transaction successfully.'}]
+        });
+        webpush.sendMessageForCancelTransaction(transaction);
+    }
 }

@@ -78,6 +78,22 @@ export default class {
             } catch(e){console.error(e)}
         }
     }
+
+    static sendMessageForCancelTransaction = async (transaction) => {
+        const w = (transaction.accepter == transaction.receiver) ? "支払い" : "請求";
+        const object = {
+            tag: 'crowpay-cancel-transaction',
+            title: `取引請求が差し戻されました(${transaction.content})`,
+            body: `${transaction.issuer}より¥ ${transaction.amount}の${w}が差し戻されました．`,
+            actions: [{action:'openTransaction', title:'取引は消えたので確認できません'}]
+        }
+        const subscriptions = (await Subscription.find({username:transaction.accepter}).exec()).map(s=>s.subscription);
+        for(let subscription of subscriptions){
+            try{
+                webpush.sendNotification(subscription, JSON.stringify(object));
+            } catch(e){console.error(e)}
+        }
+    }
     
     static sendRequestForAcceptFriend = async (friend) => {
         const object = {
