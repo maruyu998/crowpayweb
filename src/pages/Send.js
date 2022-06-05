@@ -58,6 +58,18 @@ export default class Send extends Component {
         keep_receivers[i].amount = Number(value);
         this.setState({keep_receivers})
       }
+      splitAmount = () => {
+        const keep_receivers = this.state.keep_receivers;
+        const sum = Number(document.getElementById('amount_total').value);
+        const count = keep_receivers.length;
+        const average = Math.floor(sum / count);
+        for(let i=0; i<count; i++) {
+          const value = (i!=0) ? average : sum - (average * (count - 1));
+          keep_receivers[i].amount = value;
+          document.getElementById(`amount_${i}`).value = value;
+        }
+        this.setState({keep_receivers});
+      }
     
       render(){
         return (
@@ -73,7 +85,7 @@ export default class Send extends Component {
                   <div className="text-center mb-4">
                     <h1 className="h3 mb-3 font-weight-normal">Sender</h1>
                     <p className="w-100 display-6">{this.state.username}</p>
-                    <div class="input-group mb-1">
+                    <div className="input-group mb-1">
                       <input className="form-control" type="text" id="content" placeholder="支払内容" required/>
                     </div>
                   </div>
@@ -90,7 +102,7 @@ export default class Send extends Component {
                   </div>
                   {
                     this.state.keep_receivers.map((r,i)=>(
-                      <div key={r.id} class="input-group mb-1">
+                      <div key={r.id} className="input-group mb-1">
                         <select className="form-select" onChange={e=>this.updatereceiverFriend(e.target.value,i)} required>
                           <option hidden value="">Select Friend</option>
                           {
@@ -98,13 +110,17 @@ export default class Send extends Component {
                           }
                         </select>
                         {/* <input className="form-control" type="text" autocomplete="on" list="friend_list" placeholder="friendname"  required/> */}
-                        <input className="form-control" type="number" placeholder="支払金額" min="1" step="1" onChange={e=>this.updatereceiverAmount(e.target.value,i)} required/>
+                        <input id={`amount_${i}`} className="form-control" type="number" placeholder="支払金額" min="1" step="1" onChange={e=>this.updatereceiverAmount(e.target.value,i)} required/>
                         <button type="button" className="btn btn-outline-secondary" onClick={()=>this.deleteRow(i)}>x</button>
                       </div>
                     ))
                   }
                   <p>合計支払い金額: ¥ {this.state.keep_receivers.map(r=>r.amount).reduce((a,b)=>a+b,0)}</p>
                   <button type="button" className="btn btn-primary btn-block mb-2" onClick={this.addRow}>Add</button>
+                  <div className="input-group mb-2">
+                    <input id="amount_total" className="form-control" type="number" placeholder="合計支払い金額" min="1" step="1" />
+                    <button type="button" className="btn btn-primary btn-block" onClick={this.splitAmount}>割り勘にする</button>
+                  </div>
                 </div>
                 <div className="col-12 p-0 d-grid">
                   <button type="submit" className="btn btn-lg btn-primary btn-block mt-2">支払い申請する</button>
