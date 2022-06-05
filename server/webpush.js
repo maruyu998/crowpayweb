@@ -46,7 +46,7 @@ export default class {
         const object = {
             tag: 'crowpay-issue-transaction',
             title: `取引承認依頼(${transaction.content})`,
-            body: `${transaction.issuer}より¥ ${transaction.amount}の${w}が届いています．`,
+            body: `${transaction.issuer}より€ ${transaction.amount}の${w}が届いています．`,
             actions: [{action:'openTransaction', title:'取引を確認する'}]
         }
         const subscriptions = (await Subscription.find({username:transaction.accepter}).exec()).map(s=>s.subscription);
@@ -58,7 +58,7 @@ export default class {
         const object = {
             tag: 'crowpay-accept-transaction',
             title: `取引が承認されました(${transaction.content})`,
-            body: `${transaction.accepter}より¥ ${transaction.amount}の${w}が承認されました．`,
+            body: `${transaction.accepter}より€ ${transaction.amount}の${w}が承認されました．`,
             actions: [{action:'openTransaction', title:'取引を承認・確認する'}]
         }
         const subscriptions = (await Subscription.find({username:transaction.issuer}).exec()).map(s=>s.subscription);
@@ -70,7 +70,7 @@ export default class {
         const object = {
             tag: 'crowpay-decline-transaction',
             title: `取引が却下されました(${transaction.content})`,
-            body: `${transaction.accepter}より¥ ${transaction.amount}の${w}が却下されました．`,
+            body: `${transaction.accepter}より€ ${transaction.amount}の${w}が却下されました．`,
             actions: [{action:'openTransaction', title:'取引を確認する'}]
         }
         const subscriptions = (await Subscription.find({username:transaction.issuer}).exec()).map(s=>s.subscription);

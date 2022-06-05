@@ -37,7 +37,7 @@ export default class Home extends Component {
                             <div className="card">
                                 <div className="card-body">
                                     <p>残高</p>
-                                    <p className="display-1">¥ {this.state.amount}</p>
+                                    <p className="display-1">€ {this.state.amount}</p>
                                 </div>
                             </div>
                         </div>
