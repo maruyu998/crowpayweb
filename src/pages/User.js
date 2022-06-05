@@ -14,6 +14,10 @@ export default class User extends Component {
     }
   }
   componentDidMount(){
+    this.loadFriends()
+  }
+
+  loadFriends = () => {
     fetch('/api/getUserFriends').then(res=>res.json()).then(res=>{
       this.setState({username: res.username});
       this.setState({friends: res.friends || []});
@@ -31,6 +35,7 @@ export default class User extends Component {
     }).then(res=>res.json()).then(res=>{
       this.setState({messages: res.messages})
       this.setState({redirect: res.redirect})
+      this.loadFriends()
     })
   }
   acceptFriend = (friendname) => {
@@ -41,6 +46,7 @@ export default class User extends Component {
     }).then(res=>res.json()).then(res=>{
       this.setState({messages: res.messages})
       this.setState({redirect: res.redirect})
+      this.loadFriends()
     })
   }
 

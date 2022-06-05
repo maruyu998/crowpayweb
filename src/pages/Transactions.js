@@ -12,7 +12,12 @@ export default class Transaction extends Component {
       redirect: null
 		}
 	}
+
   componentDidMount(){
+    this.loadTransactions()
+  }
+
+  loadTransactions = () => {
     fetch('/api/getTransactions').then(res=>res.json()).then(res=>{
       this.setState({username: res.username})
       this.setState({transactions: res.transactions || []})
@@ -20,14 +25,16 @@ export default class Transaction extends Component {
       this.setState({messages: res.messages})
     })
   }
+
   acceptTransaction = (id) => {
     fetch('/api/acceptTransaction', {
       method: "POST",
       headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
       body: JSON.stringify({ transaction_id: id })
-    }).then(res=>res.json()).then(res=>{ 
-      this.setState({'messages': res.messages}) 
-      this.setState({'redirect': res.redirect}) 
+    }).then(res=>res.json()).then(res=>{
+      this.setState({'messages': res.messages})
+      this.setState({'redirect': res.redirect})
+      this.loadTransactions()
     })
   }
   declineTransaction = (id) => {
@@ -36,8 +43,9 @@ export default class Transaction extends Component {
       headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
       body: JSON.stringify({ transaction_id: id })
     }).then(res=>res.json()).then(res=>{
-      this.setState({'messages': res.messages}) 
-      this.setState({'redirect': res.redirect})  
+      this.setState({'messages': res.messages})
+      this.setState({'redirect': res.redirect})
+      this.loadTransactions()
     })
   }
   cancelTransaction = (id) => {
@@ -48,6 +56,7 @@ export default class Transaction extends Component {
     }).then(res=>res.json()).then(res=>{ 
       this.setState({'messages': res.messages}) 
       this.setState({'redirect': res.redirect}) 
+      this.loadTransactions()
     })
   }
 
