@@ -22,6 +22,7 @@ router.get('/getTransactions', loginRequired, transaction.getTransactions)
 router.post('/addTransaction', loginRequired, transaction.addTransaction)
 router.post('/acceptTransaction', loginRequired, transaction.acceptTransaction)
 router.post('/declineTransaction', loginRequired, transaction.declineTransaction)
+router.post('/cancelTransaction', loginRequired, transaction.cancelTransaction)
 
 router.get('/getUserSummary', loginRequired, user.getSummary)
 router.get('/getUserFriends', loginRequired, user.getUserFriends)

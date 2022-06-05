@@ -48,6 +48,17 @@ export default class Transaction extends Component {
       this.loadTransactions()
     })
   }
+  cancelTransaction = (id) => {
+    fetch('/api/cancelTransaction', {
+      method: "POST",
+      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ transaction_id: id })
+    }).then(res=>res.json()).then(res=>{ 
+      this.setState({'messages': res.messages}) 
+      this.setState({'redirect': res.redirect}) 
+      this.loadTransactions()
+    })
+  }
 
 	render(){
 		return (
@@ -81,6 +92,7 @@ export default class Transaction extends Component {
               <div className="card-body">
                 <p className="m-0">{t.sender} → {t.receiver} (¥ {t.amount})</p>
                 <p className="m-0">{(new Date(t.issued_at)).toLocaleString()} &lt; {t.content}</p>
+                <button className="btn btn-danger btn-block" onClick={()=>this.cancelTransaction(t._id)}>Cancel</button>
               </div>
             </div>
           ))}
