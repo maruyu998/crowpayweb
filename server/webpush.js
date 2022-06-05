@@ -39,7 +39,6 @@ export default class {
         }
         
         const subscriptions = (await Subscription.find({username:transaction.accepter}).exec()).map(s=>s.subscription);
-        console.log(subscriptions)
         for(let subscription of subscriptions){
             try{
                 webpush.sendNotification(subscription, JSON.stringify(object));
