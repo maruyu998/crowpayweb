@@ -8,7 +8,7 @@ export default class {
         const username = req.session.username;
         const transactions = await Transaction.find({
             $or: [{sender: username}, {receiver: username}]
-        }).sort({accepted_at:-1}).exec();
+        }).sort({issued_at:-1}).exec();
         res.json({
             messages: [],
             username: username,
