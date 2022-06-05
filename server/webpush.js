@@ -16,6 +16,18 @@ const Subscription = mongoose.model('subscription',
     })
 )
 
+async function sendNotification(subscription, object){
+    try{
+        await webpush.sendNotification(subscription, JSON.stringify(object));
+    } catch(e){
+        if(e.body == "push subscription has unsubscribed or expired.\n"){
+            await Subscription.findOneAndRemove({endpoint: e.endpoint}).exec();
+        }else{
+            console.error(e)
+        }
+    }
+}
+
 export default class {
     static getPublicKey = (req, res) => {
         res.json({publicKey : config.webpush_public_key});
@@ -37,13 +49,8 @@ export default class {
             body: `${transaction.issuer}より¥ ${transaction.amount}の${w}が届いています．`,
             actions: [{action:'openTransaction', title:'取引を確認する'}]
         }
-        
         const subscriptions = (await Subscription.find({username:transaction.accepter}).exec()).map(s=>s.subscription);
-        for(let subscription of subscriptions){
-            try{
-                webpush.sendNotification(subscription, JSON.stringify(object));
-            } catch(e){console.error(e)}
-        }
+        for(let subscription of subscriptions) sendNotification(subscription, object);
     }
     
     static sendMessageForAcceptTransaction = async (transaction) => {
@@ -55,11 +62,7 @@ export default class {
             actions: [{action:'openTransaction', title:'取引を承認・確認する'}]
         }
         const subscriptions = (await Subscription.find({username:transaction.issuer}).exec()).map(s=>s.subscription);
-        for(let subscription of subscriptions){
-            try{
-                webpush.sendNotification(subscription, JSON.stringify(object));
-            } catch(e){console.error(e)}
-        }
+        for(let subscription of subscriptions) sendNotification(subscription, object);
     }
     
     static sendMessageForDeclineTransaction = async (transaction) => {
@@ -71,11 +74,7 @@ export default class {
             actions: [{action:'openTransaction', title:'取引を確認する'}]
         }
         const subscriptions = (await Subscription.find({username:transaction.issuer}).exec()).map(s=>s.subscription);
-        for(let subscription of subscriptions){
-            try{
-                webpush.sendNotification(subscription, JSON.stringify(object));
-            } catch(e){console.error(e)}
-        }
+        for(let subscription of subscriptions) sendNotification(subscription, object);
     }
 
     static sendMessageForCancelTransaction = async (transaction) => {
@@ -87,11 +86,7 @@ export default class {
             actions: [{action:'openTransaction', title:'取引は消えたので確認できません'}]
         }
         const subscriptions = (await Subscription.find({username:transaction.accepter}).exec()).map(s=>s.subscription);
-        for(let subscription of subscriptions){
-            try{
-                webpush.sendNotification(subscription, JSON.stringify(object));
-            } catch(e){console.error(e)}
-        }
+        for(let subscription of subscriptions) sendNotification(subscription, object);
     }
     
     static sendRequestForAcceptFriend = async (friend) => {
@@ -102,11 +97,7 @@ export default class {
             actions: [{action:'openUser', title:'承認・確認する'}]
         }
         const subscriptions = (await Subscription.find({username:friend.friendname}).exec()).map(s=>s.subscription);
-        for(let subscription of subscriptions){
-            try{
-                webpush.sendNotification(subscription, JSON.stringify(object));
-            } catch(e){console.error(e)}
-        }
+        for(let subscription of subscriptions) sendNotification(subscription, object);
     }
     
     static sendMessageForAcceptFriend = async (friend) => {
@@ -117,10 +108,6 @@ export default class {
             actions: [{action:'openUser', title:'承認・確認する'}]
         }
         const subscriptions = (await Subscription.find({username:friend.username}).exec()).map(s=>s.subscription);
-        for(let subscription of subscriptions){
-            try{
-                webpush.sendNotification(subscription, JSON.stringify(object));
-            } catch(e){console.error(e)}
-        }
+        for(let subscription of subscriptions) sendNotification(subscription, object);
     }
 }
