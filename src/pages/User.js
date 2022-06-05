@@ -66,9 +66,9 @@ export default class User extends Component {
               <h1 className="display-6">Accept Friends</h1>
               <div className="row">
                 {this.state.requested_friends.map((f,i)=>
-                  <div key={i} className="col col-12 col-sm-12 col-md-6 col-xl-3">
+                  <div key={i} className="col col-12 col-sm-12 col-md-6 col-xl-3 p-1">
                     <div className="card">
-                      <div className="card-body">
+                      <div className="card-body" style={{paddingRight:"2px"}}>
                         <p className="display-6 m-0">{f.username}</p>
                         <button className="btn btn-primary" onClick={()=>this.acceptFriend(f.username)}>Accept</button>
                       </div>
@@ -79,9 +79,9 @@ export default class User extends Component {
               <h1 className="display-6">Friends</h1>
               <div className="row">
                 {this.state.friends.filter(f=>f.accepted).map((f,i)=>
-                  <div key={i} className="col col-12 col-sm-12 col-md-6 col-xl-3">
+                  <div key={i} className="col col-12 col-sm-12 col-md-6 col-xl-3 p-1">
                     <div className="card">
-                      <div className="card-body">
+                      <div className="card-body" style={{paddingRight:"2px"}}>
                         <p className="display-6 m-0">{f.username}</p>
                         <p className="display-7 m-0">¥ {f.amount} </p>
                         <p className="display-7 m-0">friends' sum: ¥ {f.friendsamount}</p>
@@ -93,9 +93,9 @@ export default class User extends Component {
               <h1 className="display-6">Pending Friends</h1>
               <div className="row">
                 {this.state.friends.filter(f=>!f.accepted).map((f,i)=>
-                  <div key={i} className="col col-12 col-sm-12 col-md-6 col-xl-3">
+                  <div key={i} className="col col-12 col-sm-12 col-md-6 col-xl-3 p-1">
                     <div className="card">
-                      <div className="card-body">
+                      <div className="card-body" style={{paddingRight:"2px"}}>
                         <p className="display-6 m-0">{f.username}</p>
                       </div>
                     </div>
