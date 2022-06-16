@@ -34,8 +34,10 @@ export default class Send extends Component {
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             body: JSON.stringify({ receiver: data.friend, amount: data.amount, content })
           }).then(res=>res.json()).then(res=>{ 
-            this.setState({messages: [...this.state.messages, ...res.messages]}) 
-            this.setState({redirect: res.redirect}) 
+            this.setState({messages: [...this.state.messages, ...res.messages]});
+            this.setState({redirect: res.redirect});
+            e.target.content.value = "";
+            for(let i=this.state.keep_senders.length-1; i>=0; i--) this.deleteRow(i)
           })
         }
       }

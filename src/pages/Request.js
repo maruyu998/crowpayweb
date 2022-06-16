@@ -35,7 +35,9 @@ export default class Request extends Component {
             body: JSON.stringify({ sender: data.friend, amount: data.amount, content })
           }).then(res=>res.json()).then(res=>{ 
             this.setState({messages: [...this.state.messages, ...res.messages]}) 
-            this.setState({redirect: res.redirect}) 
+            this.setState({redirect: res.redirect})
+            e.target.content.value = "";
+            for(let i=this.state.keep_senders.length-1; i>=0; i--) this.deleteRow(i)
           })
         }
       }
