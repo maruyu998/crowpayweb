@@ -1,5 +1,5 @@
 import User from './db/user.js';
-import { hash, getIP } from './utils.js';
+import { hash } from './utils.js';
 
 export default class {
     static getUsername = async (req, res) => {
