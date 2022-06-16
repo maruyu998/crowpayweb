@@ -3,6 +3,7 @@ import transaction from './transaction.js';
 import user from './user.js';
 import webpush from './webpush.js';
 import auth from './auth.js';
+import notification from './notification.js'
 
 const loginRequired = auth.loginRequired;
 const router = express.Router();
@@ -28,5 +29,7 @@ router.get('/getUserSummary', loginRequired, user.getSummary)
 router.get('/getUserFriends', loginRequired, user.getUserFriends)
 router.post('/requestAddFriend', loginRequired, user.requestAddFriend)
 router.post('/acceptFriend', loginRequired, user.acceptFriend)
+
+router.get('/getNotifications', loginRequired, notification.getNotifications)
 
 export default router;

@@ -1,6 +1,7 @@
 import config from 'config';
 import webpush from 'web-push';
 import mongoose from 'mongoose';
+import Notification from './db/notification.js';
 
 webpush.setVapidDetails(
     'mailto:yukimaru@maruyu.work',
@@ -43,71 +44,86 @@ export default class {
     
     static sendRequestForAcceptTransaction = async (transaction) => {
         const w = (transaction.accepter == transaction.receiver) ? "支払い" : "請求";
+        const who = transaction.accepter;
+        const title = `取引承認依頼(${transaction.content})`;
+        const body = `${transaction.issuer}より¥ ${transaction.amount}の${w}が届いています．`;
         const object = {
-            tag: 'crowpay-issue-transaction',
-            title: `取引承認依頼(${transaction.content})`,
-            body: `${transaction.issuer}より¥ ${transaction.amount}の${w}が届いています．`,
+            tag: 'crowpay-issue-transaction', title,  body, 
             actions: [{action:'openTransaction', title:'取引を確認する'}]
         }
-        const subscriptions = (await Subscription.find({username:transaction.accepter}).exec()).map(s=>s.subscription);
+        await Notification({username: who, title, message: body}).save();
+        const subscriptions = (await Subscription.find({username:who}).exec()).map(s=>s.subscription);
         for(let subscription of subscriptions) sendNotification(subscription, object);
     }
     
     static sendMessageForAcceptTransaction = async (transaction) => {
         const w = (transaction.accepter == transaction.receiver) ? "支払い" : "請求";
+        const who = transaction.issuer;
+        const title = `取引が承認されました(${transaction.content})`;
+        const body = `${transaction.accepter}より¥ ${transaction.amount}の${w}が承認されました．`;
         const object = {
-            tag: 'crowpay-accept-transaction',
-            title: `取引が承認されました(${transaction.content})`,
-            body: `${transaction.accepter}より¥ ${transaction.amount}の${w}が承認されました．`,
+            tag: 'crowpay-accept-transaction', title, body,
             actions: [{action:'openTransaction', title:'取引を承認・確認する'}]
         }
-        const subscriptions = (await Subscription.find({username:transaction.issuer}).exec()).map(s=>s.subscription);
+        await Notification({username:who, title, message:body}).save();
+        const subscriptions = (await Subscription.find({username:who}).exec()).map(s=>s.subscription);
         for(let subscription of subscriptions) sendNotification(subscription, object);
     }
     
     static sendMessageForDeclineTransaction = async (transaction) => {
         const w = (transaction.accepter == transaction.receiver) ? "支払い" : "請求";
+        const who = transaction.issuer;
+        const title = `取引が却下されました(${transaction.content})`;
+        const body = `${transaction.accepter}より¥ ${transaction.amount}の${w}が却下されました．`;
         const object = {
-            tag: 'crowpay-decline-transaction',
-            title: `取引が却下されました(${transaction.content})`,
-            body: `${transaction.accepter}より¥ ${transaction.amount}の${w}が却下されました．`,
+            tag: 'crowpay-decline-transaction', title, body,
             actions: [{action:'openTransaction', title:'取引を確認する'}]
         }
-        const subscriptions = (await Subscription.find({username:transaction.issuer}).exec()).map(s=>s.subscription);
+        await Notification({username:who, title, message:body}).save();
+        const subscriptions = (await Subscription.find({username:who}).exec()).map(s=>s.subscription);
         for(let subscription of subscriptions) sendNotification(subscription, object);
     }
 
     static sendMessageForCancelTransaction = async (transaction) => {
         const w = (transaction.accepter == transaction.receiver) ? "支払い" : "請求";
+        const who = transaction.accepter;
+        const title = `取引請求が差し戻されました(${transaction.content})`;
+        const body = `${transaction.issuer}より¥ ${transaction.amount}の${w}が差し戻されました．`;
         const object = {
-            tag: 'crowpay-cancel-transaction',
-            title: `取引請求が差し戻されました(${transaction.content})`,
-            body: `${transaction.issuer}より¥ ${transaction.amount}の${w}が差し戻されました．`,
+            tag: 'crowpay-cancel-transaction', title, body,
             actions: [{action:'openTransaction', title:'取引は消えたので確認できません'}]
         }
-        const subscriptions = (await Subscription.find({username:transaction.accepter}).exec()).map(s=>s.subscription);
+        await Notification({username:who, title, message:body}).save();
+        const subscriptions = (await Subscription.find({username:who}).exec()).map(s=>s.subscription);
         for(let subscription of subscriptions) sendNotification(subscription, object);
     }
     
     static sendRequestForAcceptFriend = async (friend) => {
+        const who = friend.friendname;
+        const title = `友人申請(${friend.username})`;
+        const body = `${friend.username}より友人申請が届いています`;
         const object = {
-            tag: 'crowpay-issue-friend',
-            title: `友人申請(${friend.username})`,
-            body: `${friend.username}より友人申請が届いています`,
+            tag: 'crowpay-issue-friend', title, body,
             actions: [{action:'openUser', title:'承認・確認する'}]
         }
-        const subscriptions = (await Subscription.find({username:friend.friendname}).exec()).map(s=>s.subscription);
+        await Notification({username:who, title, message:body}).save();
+        const subscriptions = (await Subscription.find({username:who}).exec()).map(s=>s.subscription);
         for(let subscription of subscriptions) sendNotification(subscription, object);
     }
     
     static sendMessageForAcceptFriend = async (friend) => {
+        const who = friend.username;
+        const title = `友人申請承認(${friend.friendname})`;
+        const body = `${friend.friendname}より友人申請が承認されました．`;
         const object = {
-            tag: 'crowpay-issue-friend',
-            title: `友人申請承認(${friend.friendname})`,
-            body: `${friend.friendname}より友人申請が承認されました．`,
+            tag: 'crowpay-issue-friend', title, body,
             actions: [{action:'openUser', title:'承認・確認する'}]
         }
-        const subscriptions = (await Subscription.find({username:friend.username}).exec()).map(s=>s.subscription);
+        await Notification({username:who, title, message:body}).save();
+        const subscriptions = (await Subscription.find({username:who}).exec()).map(s=>s.subscription);
         for(let subscription of subscriptions) sendNotification(subscription, object);
     }
+
+
+
 }

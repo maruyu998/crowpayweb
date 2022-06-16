@@ -7,6 +7,7 @@ import Send from './pages/Send.js';
 import Request from './pages/Request.js';
 import Transactions from './pages/Transactions.js';
 import User from './pages/User.js';
+import Notifications from './pages/Notifications.js';
 
 export default function App() {
 	return (
@@ -21,6 +22,7 @@ export default function App() {
           <Route path="/request" element={<Request /> }/>
           <Route path="/transactions" element={<Transactions /> }/>
           <Route path="/user" element={<User /> }/>
+          <Route path="/notifications" element={<Notifications /> }/>
         </Routes>
 			</HashRouter>
 		</div>

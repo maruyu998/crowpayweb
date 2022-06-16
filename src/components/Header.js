@@ -2,6 +2,7 @@ import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import LogoImage from "../images/logo.png";
 import PersonImage from '../images/person-circle.svg';
+import NotificationImage from '../images/notification.svg';
 
 export default class Header extends Component {
   constructor(props) {
@@ -31,6 +32,9 @@ export default class Header extends Component {
               <Link className='nav-link' to='/transactions'>Transactions</Link>
             </div>
           </div>
+          {
+            !!this.state.username && <Link className='nav-link text-center' to="/notifications"><img src={NotificationImage} /><p className="m-0" style={{fontSize:"0.6em"}}>Notifications</p></Link>
+          }
           <span className="navbar-text text-center">
             { !this.state.username && <Link className='nav-link' to='/signin'>Sign in</Link> }
             { !!this.state.username && <Link className='nav-link' to='/user'><img src={PersonImage} /><span>{this.state.username}</span></Link> }
