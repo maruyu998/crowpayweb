@@ -12,11 +12,9 @@ export default class Transaction extends Component {
       redirect: null
 		}
 	}
-
   componentDidMount(){
     this.loadTransactions()
   }
-
   loadTransactions = () => {
     fetch('/api/getTransactions').then(res=>res.json()).then(res=>{
       this.setState({username: res.username})
@@ -76,10 +74,12 @@ export default class Transaction extends Component {
           {this.state.transactions.filter(t=>!t.accepted_at&&t.accepter==this.state.username).map((t,i)=>(
             <div key={i} className={"card " + (t.receiver==this.state.username ? "border-info" : "border-danger") + " mb-1"}>
               <div className="card-body">
-                <p className="m-0">{t.sender} → {t.receiver} (¥ {t.amount})</p>
+                {
+                  t.sender == this.state.username ? <p className="m-0">{this.state.username} → {t.receiver} (¥ {t.amount})</p> : <p className="m-0">{this.state.username} ← {t.sender} (¥ {t.amount})</p>
+                } 
                 <p className="m-0">{(new Date(t.issued_at)).toLocaleString()} &lt; {t.content}</p>
-                <button className="btn btn-primary btn-block" onClick={()=>this.acceptTransaction(t._id)}>Accept</button>
-                <button className="btn btn-danger btn-block" onClick={()=>this.declineTransaction(t._id)}>Decline</button>
+                <button className="btn btn-primary btn-block mr-4" onClick={()=>this.acceptTransaction(t._id)}>Accept</button>
+                <button className="btn btn-danger btn-block mx-4" onClick={()=>this.declineTransaction(t._id)}>Decline</button>
               </div>
             </div>
           ))}
@@ -90,7 +90,9 @@ export default class Transaction extends Component {
           {this.state.transactions.filter(t=>!t.accepted_at&&t.accepter!==this.state.username).map((t,i)=>(
             <div key={i} className={"card " + (t.receiver==this.state.username ? "border-info" : "border-danger") + " mb-1"}>
               <div className="card-body">
-                <p className="m-0">{t.sender} → {t.receiver} (¥ {t.amount})</p>
+                {
+                  t.sender == this.state.username ? <p className="m-0">{this.state.username} → {t.receiver} (¥ {t.amount})</p> : <p className="m-0">{this.state.username} ← {t.sender} (¥ {t.amount})</p>
+                } 
                 <p className="m-0">{(new Date(t.issued_at)).toLocaleString()} &lt; {t.content}</p>
                 <button className="btn btn-danger btn-block" onClick={()=>this.cancelTransaction(t._id)}>Cancel</button>
               </div>
@@ -103,7 +105,9 @@ export default class Transaction extends Component {
           {this.state.transactions.filter(t=>!!t.accepted_at).map((t,i)=>(
             <div key={i} className={"card " + (t.receiver==this.state.username ? "border-info" : "border-danger") + " mb-1"}>
               <div className="card-body">
-                <p className="m-0">{t.sender} → {t.receiver} (¥ {t.amount})</p>
+                {
+                  t.sender == this.state.username ? <p className="m-0">{this.state.username} → {t.receiver} (¥ {t.amount})</p> : <p className="m-0">{this.state.username} ← {t.sender} (¥ {t.amount})</p>
+                } 
                 <p className="m-0">{(new Date(t.issued_at)).toLocaleString()} &lt; {t.content}</p>
               </div>
             </div>
