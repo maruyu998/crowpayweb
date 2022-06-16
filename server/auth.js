@@ -1,5 +1,5 @@
 import User from './db/user.js';
-import { hash } from './utils.js';
+import { hash, getIP } from './utils.js';
 
 export default class {
     static getUsername = async (req, res) => {
@@ -41,6 +41,7 @@ export default class {
         }
         const user = new User({username, passhash, amount:0})
         await user.save()
+        req.session.username = username
         res.json({ 
             messages: [{type: 'info', text: 'registration successed.'}],
             redirect: '/signin'

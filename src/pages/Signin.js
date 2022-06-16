@@ -11,6 +11,15 @@ export default class Signin extends Component {
       redirect: null
     }
   }
+
+  componentDidMount(){
+    fetch('/api/getUsername').then(res=>res.json()).then(res=>{
+      if(!!res.username){
+        this.setState({redirect: '/'})
+      }
+    })
+  }
+  
   signin = (e) => {
     const username = e.target.username.value;
     const password = e.target.password.value;
