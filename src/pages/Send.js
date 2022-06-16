@@ -37,7 +37,7 @@ export default class Send extends Component {
             this.setState({messages: [...this.state.messages, ...res.messages]});
             this.setState({redirect: res.redirect});
             e.target.content.value = "";
-            for(let i=this.state.keep_senders.length-1; i>=0; i--) this.deleteRow(i)
+            for(let i=this.state.keep_receivers.length-1; i>=0; i--) this.deleteRow(i)
           })
         }
       }
