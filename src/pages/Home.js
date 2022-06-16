@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import { Navigate, Link } from 'react-router-dom';
 import RequestIcon from '../images/request.svg';
 import SendIcon from '../images/send.svg';
