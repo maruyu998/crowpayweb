@@ -29,7 +29,8 @@ export default class Signin extends Component {
       body: JSON.stringify({ username, password })
     }).then(res=>res.json()).then(res=>{ 
       this.setState({messages: res.messages}) 
-      this.setState({redirect: res.redirect}) 
+      if(res.redirect)
+        this.setState({redirect: res.redirect}) 
     })
   }
 
