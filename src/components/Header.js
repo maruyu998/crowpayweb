@@ -20,7 +20,7 @@ export default class Header extends Component {
       <nav className="navbar navbar-expand bg-light mb-3">
         <div className="container">
           <div className="navbar-brand" href="#">
-            {/* <div className="d-none d-md-block">
+            <div className="d-none d-md-block">
               <Link className="navbar-brand" to="/">
                 <img src={LogoImage} alt="" width="30" height="24" className="d-inline-block align-text-top" />
                 CrowPayWeb
@@ -30,11 +30,7 @@ export default class Header extends Component {
               <Link className="navbar-brand" to="/">
                 <img src={LogoImage} alt="" width="30" height="24" className="d-inline-block align-text-top" />
               </Link>
-            </div> */}
-            <Link className="navbar-brand" to="/">
-              <img src={LogoImage} alt="" width="30" height="24" className="d-inline-block align-text-top" />
-              CrowPayWeb
-            </Link>
+            </div>
           </div>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
