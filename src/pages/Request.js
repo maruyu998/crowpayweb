@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import { Link, Navigate } from 'react-router-dom';
 import Header from '../components/Header.js';
 import LeftArrowIcon from '../images/caret-left-fill.svg'

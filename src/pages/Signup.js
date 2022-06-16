@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import { Link, Navigate } from 'react-router-dom'
 import LogoImage from "../images/logo.png";
 import Header from '../components/Header.js';
@@ -28,7 +28,8 @@ export default class Signin extends Component {
       body: JSON.stringify({ username, password })
     }).then(res=>res.json()).then(res=>{ 
       this.setState({messages: res.messages}) 
-      this.setState({redirect: res.redirect}) 
+      if(res.redirect)
+        this.setState({redirect: res.redirect}) 
     })
   }
 

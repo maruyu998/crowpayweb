@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import Header from '../components/Header.js';
 import { Link, Navigate } from 'react-router-dom';
 
