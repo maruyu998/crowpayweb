@@ -4,7 +4,8 @@ const Notification = mongoose.model('Notification',
     new mongoose.Schema({
         username: {
             type: String,
-            required: true
+            required: true,
+            lowercase: true
         },
         title: {
             type: String

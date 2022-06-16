@@ -43,7 +43,7 @@ export default class {
     static requestAddFriend = async (req, res) => {
         const username = req.session.username;
         const friendname = req.body.friendname;
-        if(username==friendname || !friendname){
+        if(!friendname || username.toLowerCase()==friendname.toLowerCase()){
             res.json({
                 messages: [{type:'warning', text: 'invalid request.'}]
             })        

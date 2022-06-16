@@ -23,7 +23,7 @@ const User = mongoose.model('User',
             }
         }],
         amount: Number
-    })
+    }, {timestamp: true})
 );
 
 export default User;

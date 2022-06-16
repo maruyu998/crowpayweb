@@ -4,17 +4,19 @@ const Friend = mongoose.model('Friend',
     new mongoose.Schema({
         username: {
             type: String,
-            required: true
+            required: true,
+            lowercase: true
         },
         friendname: {
             type: String,
-            required: true
+            required: true,
+            lowercase: true
         },
         accepted: {
             type: Boolean,
             default: false
         }
-    })
+    }, {timestamp: true})
 )
 
 export default Friend;

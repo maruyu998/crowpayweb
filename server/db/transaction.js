@@ -4,7 +4,8 @@ const Transaction = mongoose.model('Transaction',
     new mongoose.Schema({
         issuer: {
             type: String,
-            required: true
+            required: true,
+            lowercase: true
         },
         issued_at: {
             type: Date,
@@ -12,16 +13,19 @@ const Transaction = mongoose.model('Transaction',
         },
         accepter: {
             type: String,
-            required: true
+            required: true,
+            lowercase: true
         },
         accepted_at: Date,
         sender: {
             type: String,
-            required: true
+            required: true,
+            lowercase: true
         },
         receiver: {
             type: String,
-            required: true
+            required: true,
+            lowercase: true
         },
         content: {
             type: String,
@@ -34,6 +38,6 @@ const Transaction = mongoose.model('Transaction',
         raw_amount: Number,
         rate: Number,
         unit: String
-    })
+    }, {timestamp: true})
 )
 export default Transaction;
