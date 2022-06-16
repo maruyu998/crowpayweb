@@ -124,6 +124,30 @@ export default class {
         for(let subscription of subscriptions) sendNotification(subscription, object);
     }
 
+    static sendMessageForDeclineFriend = async (friend) => {
+        const who = friend.username;
+        const title = `友人申請却下(${friend.friendname})`;
+        const body = `${friend.friendname}より友人申請が却下されました．`;
+        const object = {
+            tag: 'crowpay-cancel-friend', title, body,
+            actions: [{action:'openUser', title:'却下は確認できません'}]
+        }
+        await Notification({username:who, title, message:body}).save();
+        const subscriptions = (await Subscription.find({username:who}).exec()).map(s=>s.subscription);
+        for(let subscription of subscriptions) sendNotification(subscription, object);
+    }
 
+    static sendMessageForCancelFriend = async (friend) => {
+        const who = friend.friendname;
+        const title = `友人申請キャンセル(${friend.username})`;
+        const body = `${friend.username}より友人申請がキャンセルされました．`;
+        const object = {
+            tag: 'crowpay-cancel-friend', title, body,
+            actions: [{action:'openUser', title:'キャンセルは確認できません'}]
+        }
+        await Notification({username:who, title, message:body}).save();
+        const subscriptions = (await Subscription.find({username:who}).exec()).map(s=>s.subscription);
+        for(let subscription of subscriptions) sendNotification(subscription, object);
+    }
 
 }

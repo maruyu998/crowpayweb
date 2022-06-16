@@ -93,4 +93,38 @@ export default class {
         })
         webpush.sendMessageForAcceptFriend(friend);
     }
+
+    static declineFriend = async (req, res) => {
+        const username = req.session.username;
+        const friendname = req.body.friendname;
+        const friend = await Friend.findOne({username: friendname, friendname: username}).exec();
+        if(!friend){
+            res.json({
+                messages: [{type:'warning', text: 'friend is not found.'}]
+            })
+            return
+        }
+        await Friend.findOneAndRemove({username: friendname, friendname: username})
+        res.json({
+            messages: [{type: 'info', text: 'declined successfully.'}]
+        })
+        webpush.sendMessageForDeclineFriend(friend);
+    }
+
+    static cancelFriend = async (req, res) => {
+        const username = req.session.username;
+        const friendname = req.body.friendname;
+        const friend = await Friend.findOne({username, friendname}).exec();
+        if(!friend){
+            res.json({
+                messages: [{type:'warning', text: 'friend is not found.'}]
+            })
+            return
+        }
+        await Friend.findOneAndRemove({username, friendname})
+        res.json({
+            messages: [{type: 'info', text: 'canceled successfully.'}]
+        })
+        webpush.sendMessageForCancelFriend(friend);
+    }
 }

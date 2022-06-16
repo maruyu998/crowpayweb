@@ -29,6 +29,8 @@ router.get('/getUserSummary', loginRequired, user.getSummary)
 router.get('/getUserFriends', loginRequired, user.getUserFriends)
 router.post('/requestAddFriend', loginRequired, user.requestAddFriend)
 router.post('/acceptFriend', loginRequired, user.acceptFriend)
+router.post('/declineFriend', loginRequired, user.declineFriend)
+router.post('/cancelFriend', loginRequired, user.cancelFriend)
 
 router.get('/getNotifications', loginRequired, notification.getNotifications)
 

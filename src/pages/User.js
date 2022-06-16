@@ -49,6 +49,28 @@ export default class User extends Component {
       this.loadFriends()
     })
   }
+  declineFriend = (friendname) => {
+    fetch('/api/declineFriend', {
+      method: "POST",
+      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ friendname })
+    }).then(res=>res.json()).then(res=>{
+      this.setState({messages: res.messages})
+      this.setState({redirect: res.redirect})
+      this.loadFriends()
+    })
+  }
+  cancelFriend = (friendname) => {
+    fetch('/api/cancelFriend', {
+      method: "POST",
+      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ friendname })
+    }).then(res=>res.json()).then(res=>{
+      this.setState({messages: res.messages})
+      this.setState({redirect: res.redirect})
+      this.loadFriends()
+    })
+  }
 
   render(){
     return (
@@ -70,7 +92,21 @@ export default class User extends Component {
                     <div className="card">
                       <div className="card-body" style={{paddingRight:"2px"}}>
                         <p className="display-6 m-0">{f.username}</p>
-                        <button className="btn btn-primary" onClick={()=>this.acceptFriend(f.username)}>Accept</button>
+                        <button className="btn btn-primary btn-block mr-4" onClick={()=>this.acceptFriend(f.username)}>Accept</button>
+                        <button className="btn btn-danger btn-block mx-4" onClick={()=>this.declineFriend(f.username)}>Decline</button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <h1 className="display-6">Pending Friends</h1>
+              <div className="row">
+                {this.state.friends.filter(f=>!f.accepted).map((f,i)=>
+                  <div key={i} className="col col-12 col-sm-12 col-md-6 col-xl-3 p-1">
+                    <div className="card">
+                      <div className="card-body" style={{paddingRight:"2px"}}>
+                        <p className="display-6 m-0">{f.username}</p>
+                        <button className="btn btn-danger btn-block" onClick={()=>this.cancelFriend(f.username)}>Cancel</button>
                       </div>
                     </div>
                   </div>
@@ -85,18 +121,6 @@ export default class User extends Component {
                         <p className="display-6 m-0">{f.username}</p>
                         <p className="display-7 m-0">¥ {f.amount} </p>
                         <p className="display-7 m-0">friends' sum: ¥ {f.friendsamount}</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-              <h1 className="display-6">Pending Friends</h1>
-              <div className="row">
-                {this.state.friends.filter(f=>!f.accepted).map((f,i)=>
-                  <div key={i} className="col col-12 col-sm-12 col-md-6 col-xl-3 p-1">
-                    <div className="card">
-                      <div className="card-body" style={{paddingRight:"2px"}}>
-                        <p className="display-6 m-0">{f.username}</p>
                       </div>
                     </div>
                   </div>
