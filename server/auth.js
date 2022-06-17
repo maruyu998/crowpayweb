@@ -9,7 +9,7 @@ export default class {
     }
     
     static signin = async (req, res) => {
-        const username = req.body.username;
+        const username = String(req.body.username).toLowerCase();
         const passhash = hash(req.body.password);
         const user = await User.findOne({username, passhash}).exec();
         if(!user) {
@@ -33,7 +33,7 @@ export default class {
         //     messages: [{ type: 'danger', text: 'only admin user can register new account for now.'}]
         // })
         // return
-        const username = req.body.username
+        const username = String(req.body.username).toLowerCase();
         const passhash = hash(req.body.password)
         if(await User.findOne({username}).exec()){
             res.json({ messages: [{type: 'warning', text: 'username is already registered.'}] })
