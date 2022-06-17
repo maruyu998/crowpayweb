@@ -9,4 +9,19 @@ export default class {
             notifications
         })
     }
+    static removeNotification = async (req, res) => {
+        const username = req.session.username;
+        const notification_id = req.body.notification_id;
+        const notification = await Notification.findOne({username, _id: notification_id}).exec();
+        if(!notification){
+            res.json({
+                messages: [{type: 'warning', text: 'notification is not found.'}]
+            })
+            return;
+        }
+        await Notification.findOneAndRemove({_id: notification_id}).exec();
+        res.json({
+            messages: []
+        })
+    }
 }

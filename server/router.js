@@ -33,5 +33,6 @@ router.post('/declineFriend', loginRequired, user.declineFriend)
 router.post('/cancelFriend', loginRequired, user.cancelFriend)
 
 router.get('/getNotifications', loginRequired, notification.getNotifications)
+router.post('/removeNotification', loginRequired, notification.removeNotification)
 
 export default router;

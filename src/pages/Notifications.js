@@ -21,6 +21,19 @@ export default class Notification extends Component {
       this.setState({messages: res.messages})
     })
   }
+  removeNotification(notification){
+    const notification_id = notification._id;
+    fetch('/api/removeNotification', {
+      method: "POST",
+      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ notification_id })
+    }).then(res=>res.json()).then(res=>{
+      this.setState({redirect: res.redirect});
+      this.setState({messages: res.messages})
+      this.loadNotifications()
+    })
+  }
+
 	render(){
 		return (
 			<div>
@@ -35,7 +48,9 @@ export default class Notification extends Component {
             <div key={i} className="card mb-1">
               <div className="card-body">
                 <p className="m-0">{n.title}</p>
-                <p className="m-0">{(new Date(n.created_at)).toLocaleString()} &lt; {n.message}</p>
+                <p className="m-0" style={{fontSize:"0.5em"}}>{(new Date(n.created_at)).toLocaleString()}</p>
+                <p className="m-0" style={{fontSize:"0.5em"}}>{n.message}</p>
+                <button type="button" className="btn btn-sm btn-info" onClick={()=>this.removeNotification(n)}>Remove</button>
               </div>
             </div>
           ))}
