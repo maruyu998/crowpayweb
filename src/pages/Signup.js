@@ -12,7 +12,7 @@ export default class Signin extends Component {
     }
   }
   componentDidMount(){
-    fetch('/api/getUsername').then(res=>res.json()).then(res=>{
+    fetch('/api/getUsername', {cache:"no-store"}).then(res=>res.json()).then(res=>{
       if(!!res.username){
         this.setState({redirect: '/'})
       }
@@ -20,6 +20,7 @@ export default class Signin extends Component {
   }
 
   signup = (e) => {
+    e.preventDefault();
     const username = e.target.username.value;
     const password = e.target.password.value;
     fetch('/api/signup', {
