@@ -3,6 +3,29 @@ import Friend from './db/friend.js';
 import User from './db/user.js';
 import webpush from './webpush.js';
 
+class UserCount {
+    constructor(){
+        this.max_count = 30
+        this.max_minutes = 30
+        this.dict = {}
+    }
+    check(username){
+        if(this.dict[username] === undefined) this.dict[username] = {count: 0, last_date: null}
+        if(this.dict[username].last_date === null || (new Date().getTime()) - this.dict[username].last_date.getTime() > this.max_minutes * 60 * 1000){
+            this.dict[username].last_date = new Date()
+            this.dict[username].count = 0;
+        }else{
+            this.dict[username].count += 1;
+        }
+        if(this.dict[username].count >= this.max_count){
+            return false;
+        }
+        return true;
+    }
+}
+
+const userCount = new UserCount();
+
 export default class {
     static getTransactions = async (req, res) => {
         const username = req.session.username;
@@ -20,6 +43,12 @@ export default class {
         const username = req.session.username;
         let { receiver, sender, amount, content, raw_amount, rate, unit } = req.body;
         let accepter;
+        if(!userCount.check(username)){
+            res.json({
+                messages: [{type: 'danger', text: 'your action is limited.'}]
+            })
+            return;
+        }
         if(!Number.isInteger(amount)){
             res.json({
                 messages: [{type: 'warning', text: 'amount must be integer.'}]
