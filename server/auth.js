@@ -16,6 +16,7 @@ export default class {
             res.json({ messages: [{type: 'warning', text: 'username or password is wrong.'}] })
             return
         }
+        await new Promise((res,rej)=>req.session.regenerate(()=>{res()}));
         req.session.username = username
         res.json({ 
             messages: [{type: 'info', text: 'signin successed.'}],

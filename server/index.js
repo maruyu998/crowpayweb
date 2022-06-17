@@ -29,7 +29,8 @@ app.use(session({
         autoRemove: 'native'
     }),
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
+    rolling: true,
     cookie: {
         httpOnly: true,
         // secure: true,
