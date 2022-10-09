@@ -21,7 +21,7 @@ const Notification = mongoose.model('Notification',
             type: Date,
             default: ()=>new Date()
         }
-    }, {timestamp: true})
+    }, {timestamps: true})
 )
 
 export default Notification;

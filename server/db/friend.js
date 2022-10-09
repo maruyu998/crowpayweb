@@ -16,7 +16,7 @@ const Friend = mongoose.model('Friend',
             type: Boolean,
             default: false
         }
-    }, {timestamp: true})
+    }, {timestamps: true})
 )
 
 export default Friend;

@@ -38,6 +38,6 @@ const Transaction = mongoose.model('Transaction',
         raw_amount: Number,
         rate: Number,
         unit: String
-    }, {timestamp: true})
+    }, {timestamps: true})
 )
 export default Transaction;
