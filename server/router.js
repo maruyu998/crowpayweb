@@ -26,6 +26,7 @@ router.post('/declineTransaction', loginRequired, transaction.declineTransaction
 router.post('/cancelTransaction', loginRequired, transaction.cancelTransaction)
 
 router.get('/getUserSummary', loginRequired, user.getSummary)
+router.get('/getAllUsers', loginRequired, user.getAllUsers)
 router.get('/getUserFriends', loginRequired, user.getUserFriends)
 router.post('/requestAddFriend', loginRequired, user.requestAddFriend)
 router.post('/acceptFriend', loginRequired, user.acceptFriend)

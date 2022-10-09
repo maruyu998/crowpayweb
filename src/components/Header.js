@@ -4,6 +4,7 @@ import LogoImage from "../images/logo.png";
 import PersonImage from '../images/person-circle.svg';
 import NotificationImage from '../images/notification.svg';
 import TransactionsImage from '../images/transactions.svg';
+import GraphImage from '../images/bezier.svg';
 
 export default class Header extends Component {
   constructor(props) {
@@ -45,6 +46,9 @@ export default class Header extends Component {
                 </div>
             }
           </div>
+          {
+            !!this.state.username && <Link className='nav-link text-center' to="/graphview"><img src={GraphImage} /><p className="m-0" style={{fontSize:"0.6em"}}>GraphView</p></Link>
+          }
           {
             !!this.state.username && <Link className='nav-link text-center' to="/notifications"><img src={NotificationImage} /><p className="m-0" style={{fontSize:"0.6em"}}>Notifications</p></Link>
           }

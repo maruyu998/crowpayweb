@@ -1,6 +1,7 @@
 import User from './db/user.js';
 import Friend from './db/friend.js';
 import webpush from './webpush.js';
+import { v4 as uuidv4 } from 'uuid';
 
 export default class {
     static getSummary = async (req, res) => {
@@ -18,6 +19,29 @@ export default class {
             username: username,
             amount: user.amount,
             recent_transactions: []
+        })
+    }
+
+    static getAllUsers = async (req, res) => {
+        const username = req.session.username;
+        const friend_names = [username, ...(await Friend.find({username, accepted:true}).exec()).map(f=>f.friendname)];
+        const users_raw = await User.find().exec()
+        const user_id_dict = {}
+        for(let user of users_raw) user_id_dict[user.username] = uuidv4().split('-')[0]
+
+        const users = users_raw.map(user=>({
+            username: friend_names.indexOf(user.username)<0 ? user_id_dict[user.username] : user.username,
+            amount: user.amount
+        }))
+        const friends = (await Friend.find({accepted:true}).exec()).map(f=>({
+            username: friend_names.indexOf(f.username)<0 ? user_id_dict[f.username] : f.username,
+            friendname: friend_names.indexOf(f.friendname)<0 ? user_id_dict[f.friendname] : f.friendname
+        }))
+        res.json({
+            messages: [],
+            username,
+            all_users_info: users,
+            all_friends_info: friends,
         })
     }
     
