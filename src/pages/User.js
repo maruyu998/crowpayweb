@@ -27,6 +27,8 @@ export default class User extends Component {
   }
 
   requestFriends = (e) => {
+    const result = window.confirm(`${friendname}さんへのフレンド申請を送信しますか?`)
+    if(!result) return
     const name = e.target.crowusername.value;
     fetch('/api/requestAddFriend', {
       method: "POST",
@@ -39,6 +41,8 @@ export default class User extends Component {
     })
   }
   acceptFriend = (friendname) => {
+    const result = window.confirm(`${friendname}さんからのフレンド申請を受け入れますか?`)
+    if(!result) return
     fetch('/api/acceptFriend', {
       method: "POST",
       headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
@@ -50,6 +54,8 @@ export default class User extends Component {
     })
   }
   declineFriend = (friendname) => {
+    const result = window.confirm(`${friendname}さんからのフレンド申請を却下しますか?`)
+    if(!result) return
     fetch('/api/declineFriend', {
       method: "POST",
       headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
@@ -61,6 +67,8 @@ export default class User extends Component {
     })
   }
   cancelFriend = (friendname) => {
+    const result = window.confirm(`${friendname}さんへのフレンド申請をキャンセルしますか?`)
+    if(!result) return
     fetch('/api/cancelFriend', {
       method: "POST",
       headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
