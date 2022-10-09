@@ -14,7 +14,7 @@ const Subscription = mongoose.model('subscription',
         username: String,
         endpoint: String,
         subscription: Object
-    })
+    }, {timestamps:true})
 )
 
 async function sendNotification(subscription, object){
