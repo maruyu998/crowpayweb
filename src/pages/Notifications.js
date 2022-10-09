@@ -22,6 +22,8 @@ export default class Notification extends Component {
     })
   }
   removeNotification(notification){
+    const result = window.confirm(`通知「${notification.title}」を削除しますか?`)
+    if(!result) return
     const notification_id = notification._id;
     fetch('/api/removeNotification', {
       method: "POST",

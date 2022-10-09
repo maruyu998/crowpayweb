@@ -25,6 +25,8 @@ export default class Transaction extends Component {
   }
 
   acceptTransaction = (id) => {
+    const result = window.confirm(`取引を受け入れますか?`)
+    if(!result) return
     fetch('/api/acceptTransaction', {
       method: "POST",
       headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
@@ -36,6 +38,8 @@ export default class Transaction extends Component {
     })
   }
   declineTransaction = (id) => {
+    const result = window.confirm(`取引を拒否しますか?`)
+    if(!result) return
     fetch('/api/declineTransaction', {
       method: "POST",
       headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
@@ -47,6 +51,8 @@ export default class Transaction extends Component {
     })
   }
   cancelTransaction = (id) => {
+    const result = window.confirm(`取引をキャンセルしますか?`)
+    if(!result) return
     fetch('/api/cancelTransaction', {
       method: "POST",
       headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
