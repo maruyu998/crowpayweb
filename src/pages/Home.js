@@ -71,7 +71,6 @@ export default class Home extends Component {
             this.setState({accept_transactions});
             this.setState({redirect: res.redirect});
             this.setState({messages: res.messages});
-            console.log(accept_transactions)
         })
     }
     acceptTransaction = (id) => {

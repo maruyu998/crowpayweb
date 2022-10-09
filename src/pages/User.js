@@ -27,9 +27,9 @@ export default class User extends Component {
   }
 
   requestFriends = (e) => {
-    const result = window.confirm(`${friendname}さんへのフレンド申請を送信しますか?`)
-    if(!result) return
     const name = e.target.crowusername.value;
+    const result = window.confirm(`${name}さんへのフレンド申請を送信しますか?`)
+    if(!result) return
     fetch('/api/requestAddFriend', {
       method: "POST",
       headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
