@@ -108,12 +108,17 @@ export default class Transaction extends Component {
             </ul>
           </div>
           <div><p>表示取引ユーザ: {this.state.selected_friends.length==0?"すべてのユーザ":this.state.selected_friends.join(",")}</p></div>
-          <h1 className="display-6">Accept Transaction <span>(¥ {
+          {
             this.state.transactions
             .filter(t=>!t.accepted_at&&t.accepter==this.state.username)
-            .filter(t=>this.state.selected_friends.length==0||this.state.selected_friends.indexOf(t.sender)>=0||this.state.selected_friends.indexOf(t.receiver)>=0)
-            .map(t=>Number(t.amount) * (t.receiver==this.state.username ? 1 : -1)).reduce((a,b)=>a+b,0)
-          })</span></h1>
+            .filter(t=>this.state.selected_friends.length==0||this.state.selected_friends.indexOf(t.sender)>=0||this.state.selected_friends.indexOf(t.receiver)>=0).length > 0 &&
+            <h1 className="display-6">Accept Transaction <span>(¥ {
+              this.state.transactions
+              .filter(t=>!t.accepted_at&&t.accepter==this.state.username)
+              .filter(t=>this.state.selected_friends.length==0||this.state.selected_friends.indexOf(t.sender)>=0||this.state.selected_friends.indexOf(t.receiver)>=0)
+              .map(t=>Number(t.amount) * (t.receiver==this.state.username ? 1 : -1)).reduce((a,b)=>a+b,0)
+            })</span></h1>
+          }
           {
             this.state.transactions
             .filter(t=>!t.accepted_at&&t.accepter==this.state.username)
@@ -130,12 +135,17 @@ export default class Transaction extends Component {
               </div>
             </div>
           ))}
-          <h1 className="display-6">Waiting Transaction <span>(¥ {
+          {
             this.state.transactions
             .filter(t=>!t.accepted_at&&t.accepter!==this.state.username)
-            .filter(t=>this.state.selected_friends.length==0||this.state.selected_friends.indexOf(t.sender)>=0||this.state.selected_friends.indexOf(t.receiver)>=0)
-            .map(t=>Number(t.amount) * (t.receiver==this.state.username ? 1 : -1)).reduce((a,b)=>a+b,0)
-          })</span></h1>
+            .filter(t=>this.state.selected_friends.length==0||this.state.selected_friends.indexOf(t.sender)>=0||this.state.selected_friends.indexOf(t.receiver)>=0).length > 0 &&
+            <h1 className="display-6">Waiting Transaction <span>(¥ {
+              this.state.transactions
+              .filter(t=>!t.accepted_at&&t.accepter!==this.state.username)
+              .filter(t=>this.state.selected_friends.length==0||this.state.selected_friends.indexOf(t.sender)>=0||this.state.selected_friends.indexOf(t.receiver)>=0)
+              .map(t=>Number(t.amount) * (t.receiver==this.state.username ? 1 : -1)).reduce((a,b)=>a+b,0)
+            })</span></h1>
+          }
           {
             this.state.transactions
             .filter(t=>!t.accepted_at&&t.accepter!==this.state.username)

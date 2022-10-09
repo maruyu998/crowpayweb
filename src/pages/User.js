@@ -16,7 +16,6 @@ export default class User extends Component {
   componentDidMount(){
     this.loadFriends()
   }
-
   loadFriends = () => {
     fetch('/api/getUserFriends').then(res=>res.json()).then(res=>{
       this.setState({username: res.username});
@@ -25,7 +24,6 @@ export default class User extends Component {
       this.setState({redirect: res.redirect});
     })
   }
-
   requestFriends = (e) => {
     const name = e.target.crowusername.value;
     const result = window.confirm(`${name}さんへのフレンド申請を送信しますか?`)
@@ -93,7 +91,7 @@ export default class User extends Component {
           <hr />
           <div className="row">
             <div className="col col-12 col-sm-8 order-2 order-sm-1">
-              <h1 className="display-6">Accept Friends</h1>
+              {this.state.requested_friends.length > 0 && <h1 className="display-6">Accept Friends</h1>}
               <div className="row">
                 {this.state.requested_friends.map((f,i)=>
                   <div key={i} className="col col-12 col-sm-12 col-md-6 col-xl-3 p-1">
@@ -107,7 +105,7 @@ export default class User extends Component {
                   </div>
                 )}
               </div>
-              <h1 className="display-6">Pending Friends</h1>
+              {this.state.friends.filter(f=>!f.accepted).length > 0 && <h1 className="display-6">Pending Friends</h1> }
               <div className="row">
                 {this.state.friends.filter(f=>!f.accepted).map((f,i)=>
                   <div key={i} className="col col-12 col-sm-12 col-md-6 col-xl-3 p-1">
