@@ -17,7 +17,7 @@ export default class Header extends Component {
   }
   render() {
     return (
-      <nav className="navbar navbar-expand bg-light mb-3">
+      <nav className="navbar navbar-expand bg-light mb-3" style={{height:"4em"}}>
         <div className="container">
           <div className="navbar-brand" href="#">
             <div className="d-none d-md-block">
