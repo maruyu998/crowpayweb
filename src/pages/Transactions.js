@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Header from '../components/Header.js';
 import { Navigate } from 'react-router-dom';
+import Cookies from 'js-cookie'
 
 export default class Transaction extends Component {
 	constructor(props){
@@ -8,12 +9,20 @@ export default class Transaction extends Component {
 		this.state = {
       username: null,
 			transactions: [],
+      friends: [],
+      selected_friends: [],
       messages: [],
       redirect: null
 		}
+    fetch('/api/getUserFriends').then(res=>res.json()).then(res=>{
+      this.setState({friends: res.friends || []});
+    })
 	}
   componentDidMount(){
     this.loadTransactions()
+    if(Cookies.get('selected_friends')){
+      this.setState({selected_friends: Cookies.get('selected_friends').split(',')})
+    }
   }
   loadTransactions = () => {
     fetch('/api/getTransactions').then(res=>res.json()).then(res=>{
@@ -63,7 +72,20 @@ export default class Transaction extends Component {
       this.loadTransactions()
     })
   }
-
+  clickedFriendFilter(friend_name){
+    let selected_friends = this.state.selected_friends
+    if(friend_name==null){ // all friend is clicked
+      selected_friends = []
+    }
+    else if(this.state.selected_friends.indexOf(friend_name)>=0){
+      selected_friends = selected_friends.filter(f=>f!=friend_name)
+    }else{
+      selected_friends.push(friend_name)
+    }
+    this.setState({selected_friends})
+    Cookies.set('selected_friends', selected_friends.join(','))
+  }
+  
 	render(){
 		return (
 			<div>
@@ -73,11 +95,30 @@ export default class Transaction extends Component {
             {this.state.messages.map(message=><div className={'alert alert-'+message.type} role="alert">{message.text}</div>)}
             {this.state.redirect && <Navigate to={this.state.redirect}/>}
           </div>
+          <div className="dropdown">
+            <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              ユーザフィルタ
+            </button>
+            <ul className="dropdown-menu">
+              <li><p className="dropdown-item" onClick={e=>this.clickedFriendFilter(null)}>All Friends{this.state.selected_friends.length==0?" ✓":""}</p></li>
+              <li><hr className="dropdown-divider" /></li>
+              {
+                this.state.friends.map(f=><li><p className="dropdown-item" onClick={e=>this.clickedFriendFilter(f.username)}>{f.username}{this.state.selected_friends.indexOf(f.username)>=0?" ✓":""}</p></li>)
+              }
+            </ul>
+          </div>
+          <div><p>表示取引ユーザ: {this.state.selected_friends.length==0?"すべてのユーザ":this.state.selected_friends.join(",")}</p></div>
           <h1 className="display-6">Accept Transaction <span>(¥ {
-            this.state.transactions.filter(t=>!t.accepted_at&&t.accepter==this.state.username)
+            this.state.transactions
+            .filter(t=>!t.accepted_at&&t.accepter==this.state.username)
+            .filter(t=>this.state.selected_friends.length==0||this.state.selected_friends.indexOf(t.sender)>=0||this.state.selected_friends.indexOf(t.receiver)>=0)
             .map(t=>Number(t.amount) * (t.receiver==this.state.username ? 1 : -1)).reduce((a,b)=>a+b,0)
           })</span></h1>
-          {this.state.transactions.filter(t=>!t.accepted_at&&t.accepter==this.state.username).map((t,i)=>(
+          {
+            this.state.transactions
+            .filter(t=>!t.accepted_at&&t.accepter==this.state.username)
+            .filter(t=>this.state.selected_friends.length==0||this.state.selected_friends.indexOf(t.sender)>=0||this.state.selected_friends.indexOf(t.receiver)>=0)
+            .map((t,i)=>(
             <div key={i} className={"card " + (t.receiver==this.state.username ? "border-info" : "border-danger") + " mb-1"}>
               <div className="card-body">
                 {
@@ -90,10 +131,16 @@ export default class Transaction extends Component {
             </div>
           ))}
           <h1 className="display-6">Waiting Transaction <span>(¥ {
-            this.state.transactions.filter(t=>!t.accepted_at&&t.accepter!==this.state.username)
+            this.state.transactions
+            .filter(t=>!t.accepted_at&&t.accepter!==this.state.username)
+            .filter(t=>this.state.selected_friends.length==0||this.state.selected_friends.indexOf(t.sender)>=0||this.state.selected_friends.indexOf(t.receiver)>=0)
             .map(t=>Number(t.amount) * (t.receiver==this.state.username ? 1 : -1)).reduce((a,b)=>a+b,0)
           })</span></h1>
-          {this.state.transactions.filter(t=>!t.accepted_at&&t.accepter!==this.state.username).map((t,i)=>(
+          {
+            this.state.transactions
+            .filter(t=>!t.accepted_at&&t.accepter!==this.state.username)
+            .filter(t=>this.state.selected_friends.length==0||this.state.selected_friends.indexOf(t.sender)>=0||this.state.selected_friends.indexOf(t.receiver)>=0)
+            .map((t,i)=>(
             <div key={i} className={"card " + (t.receiver==this.state.username ? "border-info" : "border-danger") + " mb-1"}>
               <div className="card-body">
                 {
@@ -105,10 +152,16 @@ export default class Transaction extends Component {
             </div>
           ))}
           <h1 className="display-6">Transaction <span>(¥ {
-            this.state.transactions.filter(t=>!!t.accepted_at)
+            this.state.transactions
+            .filter(t=>!!t.accepted_at)
+            .filter(t=>this.state.selected_friends.length==0||this.state.selected_friends.indexOf(t.sender)>=0||this.state.selected_friends.indexOf(t.receiver)>=0)
             .map(t=>Number(t.amount) * (t.receiver==this.state.username ? 1 : -1)).reduce((a,b)=>a+b,0)
           })</span></h1>
-          {this.state.transactions.filter(t=>!!t.accepted_at).map((t,i)=>(
+          {
+            this.state.transactions
+            .filter(t=>!!t.accepted_at)
+            .filter(t=>this.state.selected_friends.length==0||this.state.selected_friends.indexOf(t.sender)>=0||this.state.selected_friends.indexOf(t.receiver)>=0)
+            .map((t,i)=>(
             <div key={i} className={"card " + (t.receiver==this.state.username ? "border-info" : "border-danger") + " mb-1"}>
               <div className="card-body">
                 {
