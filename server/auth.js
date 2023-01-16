@@ -1,4 +1,6 @@
 import User from './db/user.js';
+import Friend from './db/friend.js';
+import Invitation from './db/invitation.js';
 import { hash, getIP } from './utils.js';
 
 class IpCount {
@@ -35,7 +37,16 @@ export default class {
             username: req.session.username
         })
     }
-    
+    static getUserInfo = async (req, res) => {
+        const username = req.session.username;
+        if(!username){
+            res.json({messages: [{type: 'warning', text: 'login required'}]})
+            return;
+        }
+        const invitations = await Invitation.find({issuer:username}).exec()
+        res.json({ username, invitations })
+    }
+
     static signin = async (req, res) => {
         const username = String(req.body.username).toLowerCase();
         const passhash = hash(req.body.password);
@@ -65,16 +76,32 @@ export default class {
             return;
         }
         const lefttrycount = ipCount.getLeft(req)
+        const invitationcode = String(req.body.invitationcode);
+        if(invitationcode.length == 0){
+            res.json({
+                messages: [{type: 'warning', text: `enter invitation code. (${lefttrycount})`}]
+            })
+            return;
+        }
+        await Invitation.deleteMany({expirationdate: {$lt: new Date()}});
+        const invitation = await Invitation.findOne({code: invitationcode, expirationdate: {$gte: new Date()}}).exec();
+        if(!invitation){
+            res.json({ messages: [{type:'warning', text: `this invitation code is not found. (${lefttrycount})`}] })
+            return
+        }
+        const invitedby = invitation.issuer;
         const username = String(req.body.username).toLowerCase();
         const passhash = hash(req.body.password)
         if(await User.findOne({username}).exec()){
             res.json({ messages: [{type: 'warning', text: `username is already registered. (${lefttrycount})`}] })
             return
         }
-        const user = new User({username, passhash, amount:0})
-        await user.save()
-        req.session.username = username
-        res.json({ 
+        await User({username, passhash, invitedby, amount:0}).save();
+        await Friend({username:username, friendname: invitedby, accepted: true}).save();
+        await Friend({username:invitedby, friendname: username, accepted: true}).save();
+        await Invitation.deleteOne({_id: invitation._id}).exec();
+        req.session.username = username;
+        res.json({
             messages: [{type: 'info', text: 'registration successed.'}],
             redirect: '/signin'
         })

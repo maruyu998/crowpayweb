@@ -22,11 +22,12 @@ export default class Signin extends Component {
   signup = (e) => {
     e.preventDefault();
     const username = e.target.username.value;
+    const invitationcode = e.target.invitationcode.value;
     const password = e.target.password.value;
     fetch('/api/signup', {
       method: "POST",
       headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
+      body: JSON.stringify({ username, invitationcode, password })
     }).then(res=>res.json()).then(res=>{ 
       this.setState({messages: res.messages}) 
       if(res.redirect)
@@ -52,10 +53,13 @@ export default class Signin extends Component {
               </div>
 
               <div className="form-label-group my-2">
-                <input type="username" id="username" className="form-control" placeholder="Username" required autoFocus />
+                <input type="text" id="invitationcode" className="form-control" placeholder="Invitation Code" required autoFocus />
               </div>
               <div className="form-label-group my-2">
-                <input type="password" id="password" className="form-control" placeholder="Password" required />
+                <input type="text" id="username" className="form-control" placeholder="Username" required />
+              </div>
+              <div className="form-label-group my-2">
+                <input type="password" id="password" className="form-control" placeholder="New Password" required />
               </div>
               <button type="submit" className="btn btn-lg btn-success btn-block w-100">Sign up</button>
               <hr className="my-12" />

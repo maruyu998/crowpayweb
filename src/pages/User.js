@@ -12,16 +12,23 @@ export default class User extends Component {
       payable_wallets: [],
       selected_payable_wallet_ids: [],
       messages: [],
-      redirect: null
+      redirect: null,
+      invitations: []
     }
   }
   componentDidMount(){
+    this.loadUserInfo()
     this.loadFriends()
     this.loadPayableWallets()
   }
+  loadUserInfo = () => {
+    fetch('/api/getUserInfo').then(res=>res.json()).then(res=>{
+      this.setState({username: res.username})
+      this.setState({invitations: res.invitations})
+    })
+  }
   loadFriends = () => {
     fetch('/api/getUserFriends').then(res=>res.json()).then(res=>{
-      this.setState({username: res.username});
       this.setState({friends: res.friends || []});
       this.setState({requested_friends: res.requested_friends || []});
       this.setState({redirect: res.redirect});
@@ -101,6 +108,25 @@ export default class User extends Component {
       body: JSON.stringify({ selected_payable_wallet_ids })
     })
   }
+  issueInvitationCode = (e) => {
+    fetch('/api/issueInvitationCode').then(res=>res.json()).then(res=>{
+      this.setState({messages: res.messages})
+      this.setState({redirect: res.redirect})
+      this.loadUserInfo()
+    })
+  }
+  remoeInvitationCode = (invitationid) => {
+    fetch('/api/removeInvitationCode', {
+      method: "POST",
+      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ invitationid })
+    }).then(res=>res.json()).then(res=>{
+      this.setState({messages: res.messages})
+      this.setState({redirect: res.redirect})
+      this.loadUserInfo()
+    })
+  }
+
 
   render(){
     return (
@@ -122,6 +148,7 @@ export default class User extends Component {
                     <div className="card">
                       <div className="card-body" style={{paddingRight:"2px"}}>
                         <p className="display-6 m-0">{f.username}</p>
+                        {f.invitedby && <p className="display-7 m-0">invited by: {f.invitedby}</p>}
                         <button className="btn btn-primary btn-block mr-4" onClick={()=>this.acceptFriend(f.username)}>Accept</button>
                         <button className="btn btn-danger btn-block mx-4" onClick={()=>this.declineFriend(f.username)}>Decline</button>
                       </div>
@@ -150,7 +177,7 @@ export default class User extends Component {
                       <div className="card-body" style={{paddingRight:"2px"}}>
                         <p className="display-6 m-0">{f.username}</p>
                         <p className="display-7 m-0">¥ {f.amount} </p>
-                        <p className="display-7 m-0">friends' sum: ¥ {f.friendsamount}</p>
+                        {f.invitedby && <p className="display-7 m-0">invited by: {f.invitedby}</p>}
                       </div>
                     </div>
                   </div>
@@ -158,6 +185,21 @@ export default class User extends Component {
               </div>
             </div>
             <div className="col col-12 col-sm-4 order-1 order-sm-2">
+              <h1 className="display-6">Invite New Friend</h1>
+              <p>有効期限30分の招待コード(コードは使用後失効)</p>
+              {this.state.invitations.map((invitation,i)=>(
+                <div className="card" key={i}>
+                  <div className="card-body">
+                    <p className="py-0 display-6">{invitation.code}</p>
+                    <p className="py-0" style={{fontSize:"6px"}}>有効期限: {new Date(invitation.expirationdate).toLocaleString()}</p>
+                    <button type="submit" className="btn btn-sm btn-danger btn-block" onClick={()=>this.remoeInvitationCode(invitation._id)}>remove</button>
+                  </div>
+                </div>
+              ))}
+              <form className="input-group" onSubmit={this.issueInvitationCode}>
+                <button type="submit" className="btn btn-lg btn-primary btn-block w-100">issue invitationcode</button>
+              </form>
+              <hr />
               <h1 className="display-6">Add Friends</h1>
               <form className="input-group" onSubmit={this.requestFriends}>
                 <input type="text" id="crowusername" className="form-control" placeholder="Friend username" required></input>

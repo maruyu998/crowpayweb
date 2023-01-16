@@ -3,6 +3,8 @@ import Friend from './db/friend.js';
 import Wallet from './db/wallet.js';
 import webpush from './webpush.js';
 import { v4 as uuidv4 } from 'uuid';
+import Invitation from './db/invitation.js';
+import { generateRandomNumberString } from './utils.js';
 
 export default class {
     static getSummary = async (req, res) => {
@@ -53,18 +55,18 @@ export default class {
     static getUserFriends = async (req, res) => {
         const username = req.session.username;
         const friends = await Promise.all((await Friend.find({username}).exec()).map(async f=>{
-            if(!f.accepted) return { username: f.friendname, accepted: false, amount: null, friendsamount:null };
+            if(!f.accepted) return { username: f.friendname, accepted: false, amount: null, invitedby: null };
             
             const user = await User.findOne({username: f.friendname}).exec();
-            const _friends = await Friend.find({username:f.friendname, accepted:true}).exec();
-            let friendsamount = user.amount;
-            for(let f of _friends){
-                friendsamount += (await User.findOne({username: f.friendname})).amount;
-            }
-            return { username: f.friendname, accepted: f.accepted, amount: user.amount, friendsamount }
+            // const _friends = await Friend.find({username:f.friendname, accepted:true}).exec();
+            // let friendsamount = user.amount;
+            // for(let f of _friends){
+            //     friendsamount += (await User.findOne({username: f.friendname})).amount;
+            // }
+            return { username: f.friendname, accepted: f.accepted, amount: user.amount, invitedby: user.invitedby }
         }));
         const requested_friends = (await Friend.find({friendname: username, accepted: false}).exec()).map(f => (
-            { username: f.username, accepted: false, amount: null }
+            { username: f.username, accepted: false, amount: null, invitedby: f.invitedby }
         ));
         res.json({ messages: [], username, friends, requested_friends })
     }
@@ -187,4 +189,30 @@ export default class {
         })
     }
 
+    static issueInvitationCode = async (req, res) => {
+        const username = req.session.username;
+        await Invitation.deleteMany({issuer:username, expirationdate:{$lt:new Date()}}).exec()
+        const invitations = await Invitation.find({issuer:username}).exec()
+        if(invitations.length > 3){
+            res.json({
+                messages: [{type: 'danger', text: 'too many invitations.'}]
+            })
+            return
+        }
+        const code = generateRandomNumberString(6)
+        const expirationdate = new Date((new Date()).getTime() + 30 * 60 * 1000)
+        await Invitation({issuer:username, code, expirationdate}).save()
+        res.json({
+            messages: [{type: "info", text: 'invitation code is issued successfully.'}]
+        })
+    }
+
+    static removeInvitationCode = async (req, res) => {
+        const username = req.session.username;
+        const invitationid = req.body.invitationid;
+        await Invitation.findOneAndDelete({invitedby:username, _id: invitationid}).exec();
+        res.json({
+            messages: [{type: 'info', text: 'invitation code is removed successfully.'}]
+        })
+    }
 }

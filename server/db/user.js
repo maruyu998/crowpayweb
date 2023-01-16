@@ -12,6 +12,10 @@ const User = mongoose.model('User',
             type: String,
             required: true
         },
+        invitedby: {
+            type: String,
+            default: null
+        },
         amount: Number,
         wallets: [{
             id: {

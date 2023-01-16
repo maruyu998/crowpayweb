@@ -15,6 +15,7 @@ router.get('/webpush', loginRequired, webpush.getPublicKey)
 router.post('/webpush', loginRequired, webpush.addSubscription)
 
 router.get('/getUsername', auth.getUsername)
+router.get('/getUserInfo', auth.getUserInfo)
 router.post('/signin', auth.signin)
 router.get('/signout', auth.signout)
 router.post('/signup', auth.signup)
@@ -34,6 +35,8 @@ router.post('/declineFriend', loginRequired, user.declineFriend)
 router.post('/cancelFriend', loginRequired, user.cancelFriend)
 router.get('/getPayableWallets', loginRequired, user.getPayableWallets);
 router.post('/setPayableWallets', loginRequired, user.setPayableWallets);
+router.get('/issueInvitationCode', loginRequired, user.issueInvitationCode)
+router.post('/removeInvitationCode', loginRequired, user.removeInvitationCode)
 
 router.get('/getNotifications', loginRequired, notification.getNotifications)
 router.post('/removeNotification', loginRequired, notification.removeNotification)

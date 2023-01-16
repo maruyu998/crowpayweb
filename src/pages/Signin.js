@@ -61,7 +61,7 @@ export default class Signin extends Component {
               <button type="submit" className="btn btn-lg btn-primary btn-block w-100">Sign in</button>
               <hr className="my-12" />
               <p className="mx-auto">or</p>
-              <Link to='/signup' style={{textDecoration:'none'}}><p className="btn btn-lg btn-outline-dark btn-block w-100">Sign up</p></Link>
+              <Link to='/signup' style={{textDecoration:'none'}}><p className="btn btn-lg btn-outline-dark btn-block w-100">Sign up with invitation code</p></Link>
             </form>
           </div>
         </div>
