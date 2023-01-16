@@ -38,12 +38,12 @@ export default class Graph extends Component {
           width={window.innerWidth}
           height={window.innerHeight-100}
           graphData={{
-            nodes: this.state.all_users_info.map(({username,amount})=>({
+            nodes: this.state.all_users_info.map(({username,amount,wallets})=>({
               id:username, 
-              name: `${username} (¥${amount})`,
+              labelLines: [`${username}`,`(¥${amount})`,wallets.join(',')],
               amount: amount,
               val: (10+Math.abs(amount))/50000*20,
-              color: `hsl(${100+amount/100},100%,${50-amount/700}%)`
+              color: `hsl(${100-amount/100},100%,${50+amount/700}%)`
             })),
             links: this.state.all_friends_info.map(({username,friendname})=>({
               source:username,
@@ -52,12 +52,15 @@ export default class Graph extends Component {
           }}
           nodeCanvasObjectMode={() => "after"}
           nodeCanvasObject={(node, ctx, globalScale) => {
-            const fontsize = 14
-            ctx.font = `${fontsize/globalScale}px Sans-Serif`;
+            const fontsize = 14 / globalScale
+            ctx.font = `${fontsize}px Sans-Serif`;
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-            ctx.fillStyle = node.amount > 0 ? "red" : "black";
-            ctx.fillText(node.name, node.x, node.y);
+            ctx.fillStyle = node.amount >= 0 ? "black" : "red";
+            for(let i=0; i<node.labelLines.length; i++){
+              const margin = fontsize * 1.2 * (i+0.5 - node.labelLines.length / 2)
+              ctx.fillText(node.labelLines[i], node.x, node.y + margin);
+            }
           }}
         />
       </div>

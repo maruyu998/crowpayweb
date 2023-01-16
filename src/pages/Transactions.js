@@ -15,7 +15,7 @@ export default class Transaction extends Component {
       redirect: null
 		}
     fetch('/api/getUserFriends').then(res=>res.json()).then(res=>{
-      this.setState({friends: res.friends || []});
+      this.setState({friends: res.friends.filter(f=>f.accepted) || []});
     })
 	}
   componentDidMount(){
@@ -127,7 +127,7 @@ export default class Transaction extends Component {
             <div key={i} className={"card " + (t.receiver==this.state.username ? "border-info" : "border-danger") + " mb-1"}>
               <div className="card-body">
                 {
-                  t.sender == this.state.username ? <p className="m-0">{this.state.username} → {t.receiver} (¥ {t.amount})</p> : <p className="m-0">{this.state.username} ← {t.sender} (¥ {t.amount})</p>
+                  t.sender == this.state.username ? <p className="m-0">{this.state.username} ➡ {t.receiver} (¥ {t.amount})</p> : <p className="m-0">{this.state.username} ⬅ {t.sender} (¥ {t.amount})</p>
                 } 
                 <p className="m-0">{(new Date(t.issued_at)).toLocaleString()} &lt; {t.content}</p>
                 <button className="btn btn-primary btn-block mr-4" onClick={()=>this.acceptTransaction(t._id)}>Accept</button>
@@ -154,7 +154,7 @@ export default class Transaction extends Component {
             <div key={i} className={"card " + (t.receiver==this.state.username ? "border-info" : "border-danger") + " mb-1"}>
               <div className="card-body">
                 {
-                  t.sender == this.state.username ? <p className="m-0">{this.state.username} → {t.receiver} (¥ {t.amount})</p> : <p className="m-0">{this.state.username} ← {t.sender} (¥ {t.amount})</p>
+                  t.sender == this.state.username ? <p className="m-0">{this.state.username} ➡ {t.receiver} (¥ {t.amount})</p> : <p className="m-0">{this.state.username} ⬅ {t.sender} (¥ {t.amount})</p>
                 } 
                 <p className="m-0">{(new Date(t.issued_at)).toLocaleString()} &lt; {t.content}</p>
                 <button className="btn btn-danger btn-block" onClick={()=>this.cancelTransaction(t._id)}>Cancel</button>
@@ -175,7 +175,7 @@ export default class Transaction extends Component {
             <div key={i} className={"card " + (t.receiver==this.state.username ? "border-info" : "border-danger") + " mb-1"}>
               <div className="card-body">
                 {
-                  t.sender == this.state.username ? <p className="m-0">{this.state.username} → {t.receiver} (¥ {t.amount})</p> : <p className="m-0">{this.state.username} ← {t.sender} (¥ {t.amount})</p>
+                  t.sender == this.state.username ? <p className="m-0">{this.state.username} ➡ {t.receiver} (¥ {t.amount})</p> : <p className="m-0">{this.state.username} ⬅ {t.sender} (¥ {t.amount})</p>
                 } 
                 <p className="m-0">{(new Date(t.issued_at)).toLocaleString()} &lt; {t.content}</p>
               </div>

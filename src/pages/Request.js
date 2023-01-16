@@ -122,6 +122,7 @@ export default class Request extends Component {
                     <input id="amount_total" className="form-control" type="number" placeholder="合計請求金額" min="1" step="1" />
                     <button type="button" className="btn btn-primary btn-block" onClick={this.splitAmount}>割り勘にする</button>
                   </div>
+                  <p>※自分も含めて割り勘したい場合は，一つ余分に行を追加してから「割り勘にする」buttonをね</p>
                 </div>
                 <div className="col-12 p-0 d-grid">
                   <button type="submit" className="btn btn-lg btn-primary btn-block mt-2">請求申請する</button>

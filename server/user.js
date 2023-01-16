@@ -1,5 +1,6 @@
 import User from './db/user.js';
 import Friend from './db/friend.js';
+import Wallet from './db/wallet.js';
 import webpush from './webpush.js';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -28,10 +29,14 @@ export default class {
         const users_raw = await User.find().exec()
         const user_id_dict = {}
         for(let user of users_raw) user_id_dict[user.username] = uuidv4().split('-')[0]
+        const wallets = await Wallet.find().exec()
+        const wallet_id_dict = {}
+        for(let wallet of wallets) wallet_id_dict[wallet._id] = wallet.name
 
         const users = users_raw.map(user=>({
             username: friend_names.indexOf(user.username)<0 ? user_id_dict[user.username] : user.username,
-            amount: user.amount
+            amount: user.amount,
+            wallets: user.wallets.map(w=>wallet_id_dict[w._id])
         }))
         const friends = (await Friend.find({accepted:true}).exec()).map(f=>({
             username: friend_names.indexOf(f.username)<0 ? user_id_dict[f.username] : f.username,
@@ -151,4 +156,35 @@ export default class {
         })
         webpush.sendMessageForCancelFriend(friend);
     }
+
+    static getPayableWallets = async (req, res) => {
+        const username = req.session.username;
+        const selected_payable_wallet_ids = await User.findOne({username}).exec().then(user=>Array.from(new Set(user.wallets.map(w=>w._id))))
+        const payable_wallets = await Wallet.find().exec();
+        res.json({
+            selected_payable_wallet_ids,
+            payable_wallets
+        })
+    }
+
+    static setPayableWallets = async (req, res) => {
+        const username = req.session.username;
+        const selected_payable_wallet_ids = Array.from(new Set(req.body.selected_payable_wallet_ids));
+        const wallets = [];
+        for(let wid of selected_payable_wallet_ids){
+            const wallet = await Wallet.findById(wid).exec();
+            if(!wallet) {
+                res.json({
+                    messages: [{type: 'warning', text: `could not find wallet id ${wallet}`}]
+                })
+                return
+            }
+            wallets.push(wallet);
+        }
+        await User.findOneAndUpdate({username}, {wallets}).exec()
+        res.json({
+            messages: [{type: 'info', text: `wallet ids are updated successfully.`}]
+        })
+    }
+
 }

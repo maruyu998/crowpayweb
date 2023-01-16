@@ -12,17 +12,13 @@ const User = mongoose.model('User',
             type: String,
             required: true
         },
-        groups: [{
+        amount: Number,
+        wallets: [{
             id: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'Group'
+                ref: 'Wallet'
             },
-            archived: {
-                type: Boolean,
-                default: false
-            }
-        }],
-        amount: Number
+        }]
     }, {timestamps: true})
 );
 

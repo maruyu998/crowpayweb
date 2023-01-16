@@ -32,6 +32,8 @@ router.post('/requestAddFriend', loginRequired, user.requestAddFriend)
 router.post('/acceptFriend', loginRequired, user.acceptFriend)
 router.post('/declineFriend', loginRequired, user.declineFriend)
 router.post('/cancelFriend', loginRequired, user.cancelFriend)
+router.get('/getPayableWallets', loginRequired, user.getPayableWallets);
+router.post('/setPayableWallets', loginRequired, user.setPayableWallets);
 
 router.get('/getNotifications', loginRequired, notification.getNotifications)
 router.post('/removeNotification', loginRequired, notification.removeNotification)

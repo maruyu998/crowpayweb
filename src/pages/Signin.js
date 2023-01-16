@@ -49,7 +49,7 @@ export default class Signin extends Component {
               <div className="text-center mb-4">
                 <Link to="/"><img className="mb-4" src={LogoImage} alt="" width="72" height="72" /></Link>
                 <h1 className="h3 mb-3 font-weight-normal">Crow Pay Web</h1>
-                <p>Crow Pay Web は Crow Pay の簡易 web 版です．</p>
+                <p>お金の貸し借りを一つのwalletで記録</p>
               </div>
 
               <div className="form-label-group my-2">

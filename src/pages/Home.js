@@ -3,6 +3,7 @@ import { Navigate, Link } from 'react-router-dom';
 import RequestIcon from '../images/request.svg';
 import SendIcon from '../images/send.svg';
 import OtherIcon from '../images/three-dots.svg';
+import FundIcon from '../images/fund.png';
 import Header from '../components/Header.js';
 
 export default class Home extends Component {
@@ -122,20 +123,20 @@ export default class Home extends Component {
                             <div className="row">
                                 <div className="col-4 text-center">
                                     <Link to='/send'>
-                                        <img src={SendIcon}></img>
+                                        <img className="w-100" src={SendIcon}></img>
                                         <p>支払い</p>
                                     </Link>
                                 </div>
                                 <div className="col-4 text-center">
                                     <Link to='/request'>
-                                        <img src={RequestIcon}></img>
+                                        <img className="w-100" src={RequestIcon}></img>
                                         <p>請求</p>
                                     </Link>
                                 </div>
                                 <div className="col-4 text-center">
                                     <Link to='#'>
-                                        <img src={OtherIcon}></img>
-                                        <p>その他</p>
+                                        <img className="w-100" src={FundIcon}></img>
+                                        <p>募金</p>
                                     </Link>
                                 </div>
                             </div>

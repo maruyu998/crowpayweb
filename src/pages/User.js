@@ -9,12 +9,15 @@ export default class User extends Component {
       username: null,
       friends: [],
       requested_friends: [],
+      payable_wallets: [],
+      selected_payable_wallet_ids: [],
       messages: [],
       redirect: null
     }
   }
   componentDidMount(){
     this.loadFriends()
+    this.loadPayableWallets()
   }
   loadFriends = () => {
     fetch('/api/getUserFriends').then(res=>res.json()).then(res=>{
@@ -75,6 +78,27 @@ export default class User extends Component {
       this.setState({messages: res.messages})
       this.setState({redirect: res.redirect})
       this.loadFriends()
+    })
+  }
+  loadPayableWallets = () => {
+    fetch('/api/getPayableWallets').then(res=>res.json()).then(res=>{
+      this.setState({selected_payable_wallet_ids: res.selected_payable_wallet_ids || []});
+      this.setState({payable_wallets: res.payable_wallets || []});
+      this.setState({redirect: res.redirect});
+    })
+  }
+  selectPayableWallet = (wallet_id) => {
+    let selected_payable_wallet_ids = this.state.selected_payable_wallet_ids
+    if(selected_payable_wallet_ids.filter(wid=>wid==wallet_id).length > 0){
+      selected_payable_wallet_ids = selected_payable_wallet_ids.filter(wid=>wid!=wallet_id)
+    }else{
+      selected_payable_wallet_ids.push(wallet_id)
+    }
+    this.setState({selected_payable_wallet_ids})
+    fetch('/api/setPayableWallets', {
+      method: "POST",
+      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ selected_payable_wallet_ids })
     })
   }
 
@@ -139,6 +163,18 @@ export default class User extends Component {
                 <input type="text" id="crowusername" className="form-control" placeholder="Friend username" required></input>
                 <button type="submit" className="btn btn-lg btn-primary btn-block w-100">send request</button>
               </form>
+              <hr />
+              <h1 className="display-6">Add Payable Wallet</h1>
+              <div className="dropdown">
+                <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Register Payable Wallets
+                </button>
+                <ul className="dropdown-menu">
+                  {
+                    this.state.payable_wallets.map(w=><li><p className="dropdown-item" onClick={e=>this.selectPayableWallet(w._id)}>{w.name}{this.state.selected_payable_wallet_ids.indexOf(w._id)>=0?" ✓":""}</p></li>)
+                  }
+                </ul>
+              </div>
             </div>
           </div>
         </div>
