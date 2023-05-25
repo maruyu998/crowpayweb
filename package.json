@@ -24,15 +24,15 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "reactdev": "PORT=3001 BROWSER=none react-scripts start",
-    "reactdeploy": "react-scripts build",
-    "serverdev": "nodemon server/index.js",
-    "serverdeploy": "NODE_ENV=production node server/index.js",
-    "dev": "run-p reactdev serverdev",
-    "deploy": "react-scripts build && NODE_ENV=production node server/index.js",
+    "rdev": "PORT=3001 BROWSER=none react-scripts start",
+    "rdep": "react-scripts build",
+    "sdev": "nodemon server/index.js",
+    "sdep": "NODE_ENV=production node server/index.js",
+    "dev": "run-p rdev sdev",
+    "dep": "npm run rdep && npm run sdep",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "forever": "react-scripts build && NODE_ENV=production forever start --minUptime 60000 --spinSleepTime 20000 --uid crowpay -a server/index.js"
+    "forever": "NODE_ENV=production forever start --minUptime 60000 --spinSleepTime 20000 --uid crowpay -a server/index.js"
   },
   "eslintConfig": {
     "extends": [

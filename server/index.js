@@ -17,7 +17,6 @@ mongoose.connection.on('error', function(err) {
     process.exit(-1);
 });
 
-
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -38,25 +37,12 @@ app.use(session({
     }
 }))
 
-
 app.use('/manifest.json', express.static(path.join(__dirname, "../build/manifest.json")))
 app.use('/robots.txt', express.static(path.join(__dirname, "../build/robots.txt")))
 
-// const basicAuth = require("express-basic-auth")
-// app.use(basicAuth({
-//     challenge: true,
-//     unauthorizedResponse: () => "Unauthorized",
-//     authorizer: (username, password) => {
-//         const userMatch = basicAuth.safeCompare(username, config.basic_auth_username);
-//         const passMatch = basicAuth.safeCompare(password, config.basic_auth_password);
-//         return userMatch && passMatch;
-//     }
-// }));
-
-
 app.use('/api', bodyParser.json(), router);
-app.use(express.static(path.join(__dirname, "../build")))
+app.use(express.static(path.join(__dirname, "../build")));
 
-app.listen(9200, ()=>{
+app.listen(9202, ()=>{
     console.log('express app is listening')
 });
