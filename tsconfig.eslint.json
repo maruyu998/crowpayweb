@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "allowJs": true
+  },
+  "exclude": [
+    "client/public/*.js"
+  ],
+  "include": [
+    "server/**/*.ts",
+    "webcommons/**/*.ts",
+    "client/src/**/*.tsx",
+    "client/src/**/*.ts",
+    "config/**/*.ts",
+    ".*.js", 
+    "*.js", 
+    "*.ts", 
+  ]
+}
